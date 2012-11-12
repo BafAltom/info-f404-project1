@@ -5,21 +5,27 @@
 #include <stdlib.h>
 #include <vector>
 #include <fstream>
+#include <time.h>
 using namespace std;
 
 #include "task.hpp"
 
+// GENERATORS CONSTANTS
+
+int MAX_OFFSET = 20;
+int MAX_DEADLINE = 30;
+int MAX_PERIOD = 200;
+
 vector<Task> generateTasks(int utPerc, int numT)
-// for now this is really stupid and deterministic
-// TODO : add randomness
+// This does not respect the utilization parameters (yet)
 {
 	vector<Task> tasks = vector<Task>();
 	for (int i = 0; i < numT; ++i)
 	{
-		int offset = 0;
-		int period = 150;
-		int deadline = 100;
-		int wcet = utPerc;
+		int offset = (int) (rand() % MAX_OFFSET);
+		int deadline = (int) (rand() % MAX_DEADLINE);
+		int period = (int) ((rand() % (MAX_PERIOD - deadline)) + deadline);
+		int wcet = (int) ((rand() % (deadline - 1)) + 1);
 		tasks.push_back(Task(offset, period, deadline, wcet));
 	}
 	return tasks;
@@ -27,6 +33,7 @@ vector<Task> generateTasks(int utPerc, int numT)
 
 int main(int argc, char** argv)
 {
+	srand(time(NULL));
 	// default parameters
 	int utilizationPercent = 100;
 	int numberOfTasks = 10;

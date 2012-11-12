@@ -18,6 +18,7 @@ taskGenerator: taskGenerator.o task.o
 
 clean:
 		rm -rf *.o
+		rm -rf out*
 
 mrproper: clean
 		rm -rf $(EXEC)
