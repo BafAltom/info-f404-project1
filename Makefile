@@ -7,7 +7,7 @@ EXEC=main taskGenerator
 
 all: $(EXEC)
 
-main: main.o task.o
+main: main.o task.o simulation.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
 taskGenerator: taskGenerator.o task.o

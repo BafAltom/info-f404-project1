@@ -37,7 +37,8 @@ vector<Task> generateTasks(int utPerc, int numT)
 		int offset = (int) (rand() % MAX_OFFSET);
 		int deadline = (int) ((rand() % (MAX_DEADLINE - MIN_DEADLINE)) + MIN_DEADLINE);
 		int period = (int) ((rand() % (MAX_PERIOD - deadline)) + deadline);
-		int wcet = (deadline > 1) ? (int) ((rand() % (deadline - 1)) + 1) : 1;
+		int wcet = (deadline == 1) ? 1 : (int) ((rand() % (deadline - 1)) + 1);
+
 		tasks.push_back(Task(offset, period, deadline, wcet));
 	}
 
@@ -45,21 +46,14 @@ vector<Task> generateTasks(int utPerc, int numT)
 
 	float current_utiliz = systemUtilization(tasks);
 
-	cout << "current utilization : " << current_utiliz << endl;
-	fflush(stdout);
-
 	float utilizFactor = utPerc / current_utiliz;
-
-	cout << "utilizFactor " << utPerc << " / " << current_utiliz << " = " << utilizFactor << endl;
-	fflush(stdout);
 
 	for (unsigned int i = 0; i < tasks.size(); ++i)
 	{
 		tasks[i].setWcet((int) (tasks[i].getWcet() * utilizFactor));
 	}
 
-	cout << "utilization : " << systemUtilization(tasks) << endl;
-	fflush(stdout);
+	cout << "best utilization I could do : " << systemUtilization(tasks) << " (and not " << utPerc << ")" << endl;
 	return tasks;
 }
 
