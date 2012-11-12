@@ -1,3 +1,9 @@
+# custom
+
+main
+Rapport/*
+!Rapport/rapport.tex
+
 # Compiled Object files
 *.slo
 *.lo
