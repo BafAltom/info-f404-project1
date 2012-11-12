@@ -3,6 +3,8 @@
 #include <sstream>
 #include <exception>
 #include <stdexcept>
+#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 
 class Task
@@ -10,6 +12,7 @@ class Task
 public:
 	Task();
 	Task(int offset, int period, int deadline, int wcet);
+	Task(string parseString);
 
 	int getUtilisation();
 

@@ -4,6 +4,27 @@
 Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet)
 {	}
 
+Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0)
+{
+
+	string s = "string, to, split";
+	istringstream ss(parseString);
+	string parsedStrings[4];
+	int counter = 0;
+	while (!ss.eof())
+	{
+		string x;
+		getline(ss, x,'\t');
+		parsedStrings[counter++] =  x;
+	}
+
+	_offset = atoi(parsedStrings[0].c_str());
+	_period = atoi(parsedStrings[1].c_str());
+	_deadline = atoi(parsedStrings[2].c_str());
+	_wcet = atoi(parsedStrings[3].c_str());
+
+}
+
 int Task::getUtilisation()
 {
 	return (float)(_wcet/_deadline);
@@ -12,12 +33,10 @@ int Task::getUtilisation()
 string Task::asString()
 {
 	std::ostringstream s;
-	s << "("
-	  << getOffset() << ",\t"
-	  << getPeriod() << ",\t"
-	  << getDeadline() << ",\t"
-	  << getWcet()
-	  << ")";
+	s << getOffset() << "\t"
+	  << getPeriod() << "\t"
+	  << getDeadline() << "\t"
+	  << getWcet();
 	return s.str();
 }
 
