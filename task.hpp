@@ -14,7 +14,7 @@ public:
 	Task(int offset, int period, int deadline, int wcet);
 	Task(string parseString);
 
-	int getUtilisation();
+	int getUtilizationPercent();
 
 	string asString();
 

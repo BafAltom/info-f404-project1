@@ -1,5 +1,5 @@
 CPP=g++
-CPPFLAGS=-Wall -pedantic -Wextra -std=c++98 -Weffc++ -Wstrict-null-sentinel
+CPPFLAGS=-Wall -g -pedantic -Wextra -std=c++98 -Weffc++ -Wstrict-null-sentinel
 LDFLAGS=
 EXEC=main taskGenerator
 

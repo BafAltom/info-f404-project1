@@ -24,9 +24,9 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0)
 
 }
 
-int Task::getUtilisation()
+int Task::getUtilizationPercent()
 {
-	return (float)(_wcet/_deadline);
+	return (_wcet*100/_deadline);
 }
 
 string Task::asString()

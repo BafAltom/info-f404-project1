@@ -13,21 +13,53 @@ using namespace std;
 // GENERATORS CONSTANTS
 
 int MAX_OFFSET = 20;
+int MIN_DEADLINE = 1;
 int MAX_DEADLINE = 30;
 int MAX_PERIOD = 200;
 
-vector<Task> generateTasks(int utPerc, int numT)
-// This does not respect the utilization parameters (yet)
+int systemUtilization(vector<Task> tasks)
 {
+	int current_utiliz = 0;
+	for (unsigned int i = 0; i < tasks.size(); ++i)
+	{
+		current_utiliz += tasks[i].getUtilizationPercent();
+	}
+	return current_utiliz;
+}
+
+vector<Task> generateTasks(int utPerc, int numT)
+{
+	// Generate numT tasks randomly
+
 	vector<Task> tasks = vector<Task>();
 	for (int i = 0; i < numT; ++i)
 	{
 		int offset = (int) (rand() % MAX_OFFSET);
-		int deadline = (int) (rand() % MAX_DEADLINE);
+		int deadline = (int) ((rand() % (MAX_DEADLINE - MIN_DEADLINE)) + MIN_DEADLINE);
 		int period = (int) ((rand() % (MAX_PERIOD - deadline)) + deadline);
-		int wcet = (int) ((rand() % (deadline - 1)) + 1);
+		int wcet = (deadline > 1) ? (int) ((rand() % (deadline - 1)) + 1) : 1;
 		tasks.push_back(Task(offset, period, deadline, wcet));
 	}
+
+	// modify tasks to fit the utilization parameter
+
+	float current_utiliz = systemUtilization(tasks);
+
+	cout << "current utilization : " << current_utiliz << endl;
+	fflush(stdout);
+
+	float utilizFactor = utPerc / current_utiliz;
+
+	cout << "utilizFactor " << utPerc << " / " << current_utiliz << " = " << utilizFactor << endl;
+	fflush(stdout);
+
+	for (unsigned int i = 0; i < tasks.size(); ++i)
+	{
+		tasks[i].setWcet((int) (tasks[i].getWcet() * utilizFactor));
+	}
+
+	cout << "utilization : " << systemUtilization(tasks) << endl;
+	fflush(stdout);
 	return tasks;
 }
 
