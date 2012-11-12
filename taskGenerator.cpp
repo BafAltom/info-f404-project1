@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	// default parameters
 	int utilizationPercent = 100;
 	int numberOfTasks = 10;
-	string outputName = "defaultOutput";
+	string outputName = "output_default";
 	
 	// parse arguments
 	for (int i = 1; i < argc; i += 2)

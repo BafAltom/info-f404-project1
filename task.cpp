@@ -1,6 +1,5 @@
 #include "task.hpp"
 
-
 Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet)
 {	}
 

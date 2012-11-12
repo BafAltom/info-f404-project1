@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string>
 #include <exception>
-
-#include "task.hpp"
 using namespace std;
 
-int main(int argc, char** argv)
+#include "task.hpp"
+
+int main()
 {
 	cout << "hello" << endl;
 	Task t = Task("1	1	1	1");
