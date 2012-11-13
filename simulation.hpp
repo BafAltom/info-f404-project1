@@ -8,6 +8,7 @@ class Simulation
 public:
 	Simulation();
 	Simulation(int nCPU, vector<Task> t);
+	virtual ~Simulation() = 0;
 
 	virtual int computeStudyInterval() = 0;
 

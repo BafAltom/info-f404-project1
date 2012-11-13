@@ -1,13 +1,10 @@
 #include "simulation.hpp"
 
 Simulation::Simulation() : t(0), deltaT(1), numberOfCPU(1), tasks(vector<Task>()), preemption_counter(0), migration_counter(0), number_of_core_used(0), idle_time_counter(0)
-
-
 {	}
 
 Simulation::Simulation(int nCPU, vector<Task> t) : t(0), deltaT(1), numberOfCPU(nCPU), tasks(t), preemption_counter(0), migration_counter(0), number_of_core_used(0), idle_time_counter(0)
 {	}
-
 
 void Simulation::run()
 {
