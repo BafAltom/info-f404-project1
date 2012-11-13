@@ -21,9 +21,7 @@ int systemUtilization(vector<Task> tasks)
 {
 	int current_utiliz = 0;
 	for (unsigned int i = 0; i < tasks.size(); ++i)
-	{
 		current_utiliz += tasks[i].getUtilizationPercent();
-	}
 	return current_utiliz;
 }
 
@@ -45,10 +43,9 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		tasks.push_back(Task(offset, period, deadline, wcet));
 	}
 
+	cout << "Initial generation :" << endl;
 	for (unsigned int t = 0; t < tasks.size(); ++t)
-	{
 		cout << tasks[t].asString() << endl;
-	}
 
 
 	// modify all tasks to get closer to the utilization parameter
@@ -65,27 +62,27 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		{
 			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
 			tasks[i].setWcet(max(newWcet, 1));
+
 			// wcet must be < deadline and period
-			if (tasks[i].getWcet() > tasks[i].getPeriod())
-				tasks[i].setPeriod(tasks[i].getWcet());
 			if (tasks[i].getWcet() > tasks[i].getDeadline())
 				tasks[i].setDeadline(tasks[i].getWcet());
+			if (tasks[i].getWcet() > tasks[i].getPeriod())
+				tasks[i].setPeriod(tasks[i].getWcet());
 		}
 		else
 		{
 			int newDeadline = (int) (tasks[i].getDeadline() * (1/utilizFactor));
 			tasks[i].setDeadline(max(newDeadline, 1));
+
 			if (tasks[i].getWcet() > tasks[i].getDeadline())
 				tasks[i].setWcet(tasks[i].getDeadline());
 		}
 	}
 
-	cout << "---------------------" << endl;
+	cout << "--------------------- after rescaling" << endl;
 
 	for (unsigned int t = 0; t < tasks.size(); ++t)
-	{
-		cout << tasks[t].asString() << endl;
-	}
+		cout << tasks[t].asString() << "\t" << tasks[t].getUtilizationPercent() << endl;
 
 	// Try to get closer and closer to the desired utilization by small modifications
 	current_utiliz = systemUtilization(tasks);
@@ -97,36 +94,48 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		int rndTaskP = rand() % tasks.size();
 		Task* rndTask = &tasks[rndTaskP];
 
+		// can we use this task?
+		if (mustDecreaseUtil)
+		{
+			if (rndTask->getWcet() == 1)
+				continue;
+		}
+		else
+		{
+			if (rndTask->getUtilizationPercent() == 100)
+				continue;
+		}
+
 		// which small modification do we make? --> random choice
 		int rollOfDice = rand() % 2;
 		if (rollOfDice == 0) // change wcet
 		{
 			int oldWcet = rndTask->getWcet();
-			// can we change wcet ?
-			if ((mustDecreaseUtil and (oldWcet == 1))
-				or ((not mustDecreaseUtil) and (
-					(oldWcet == rndTask->getDeadline()) or (oldWcet == rndTask->getPeriod()))))
-				continue;
 			int newWcet = mustDecreaseUtil ? --oldWcet : ++oldWcet;
 			rndTask->setWcet(newWcet);
 		}
 		else // change deadline
 		{
 			int oldDeadline = rndTask->getDeadline();
-			// can we change deadline ?
-			if ((mustDecreaseUtil and oldDeadline >= rndTask->getPeriod())
-				or ((not mustDecreaseUtil) and oldDeadline == 0))
-				continue;
 			int newDeadline = mustDecreaseUtil ? ++oldDeadline : --oldDeadline;
 			rndTask->setDeadline(newDeadline);
 		}
 
 		current_utiliz = systemUtilization(tasks);
 		++loop_counter;
+
+		cout << "--------------------- step " << loop_counter << endl;
+		for (unsigned int t = 0; t < tasks.size(); ++t)
+			cout << tasks[t].asString() << "\tu: " << tasks[t].getUtilizationPercent() << endl;
 	}
 
-	cout << "best utilization I could do : " << systemUtilization(tasks) << " (and not " << utPerc << ")" << endl;
-	cout << "delta : " << abs(utPerc - systemUtilization(tasks)) << "\tprecision : " << precision << "\tloops : "<< loop_counter << endl;
+	int delta = abs(utPerc - systemUtilization(tasks));
+
+	cout << "best utilization I could do : " << systemUtilization(tasks);
+	if (delta > 0)
+		cout << " (and not " << utPerc << ")";
+	cout << endl;
+	cout << "delta : " << delta << "\tprecision : " << precision << "\tloops : "<< loop_counter << endl;
 	return tasks;
 }
 
