@@ -27,8 +27,11 @@ int systemUtilization(vector<Task> tasks)
 	return current_utiliz;
 }
 
-vector<Task> generateTasks(int utPerc, int numT)
+vector<Task> generateTasks(int utPerc, int numT, int precision = 50)
 {
+	if (utPerc > numT * 100)
+		throw logic_error("generateTasks : Impossible to do a feasible system with the given parameters");
+
 	// Generate numT tasks randomly
 
 	vector<Task> tasks = vector<Task>();
@@ -42,6 +45,12 @@ vector<Task> generateTasks(int utPerc, int numT)
 		tasks.push_back(Task(offset, period, deadline, wcet));
 	}
 
+	for (unsigned int t = 0; t < tasks.size(); ++t)
+	{
+		cout << tasks[t].asString() << endl;
+	}
+
+
 	// modify tasks to fit the utilization parameter
 
 	float current_utiliz = systemUtilization(tasks);
@@ -50,10 +59,32 @@ vector<Task> generateTasks(int utPerc, int numT)
 
 	for (unsigned int i = 0; i < tasks.size(); ++i)
 	{
-		tasks[i].setWcet((int) (tasks[i].getWcet() * utilizFactor));
+		// modify wcet or deadline? --> random choice
+		if (rand()%2 == 0)
+		{
+			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
+			tasks[i].setWcet(max(newWcet, 1));
+			if (tasks[i].getWcet() > tasks[i].getDeadline())
+				tasks[i].setDeadline(tasks[i].getWcet());
+		}
+		else
+		{
+			int newDeadline = (int) (tasks[i].getDeadline() * (1/utilizFactor));
+			tasks[i].setDeadline(max(newDeadline, 1));
+			if (tasks[i].getWcet() > tasks[i].getDeadline())
+				tasks[i].setWcet(tasks[i].getDeadline());
+		}
+	}
+
+	cout << "---------------------" << endl;
+
+	for (unsigned int t = 0; t < tasks.size(); ++t)
+	{
+		cout << tasks[t].asString() << endl;
 	}
 
 	cout << "best utilization I could do : " << systemUtilization(tasks) << " (and not " << utPerc << ")" << endl;
+	cout << "delta : " << abs(utPerc - systemUtilization(tasks)) << "\tprecision : " << precision << endl;
 	return tasks;
 }
 
