@@ -48,7 +48,7 @@ string Task::asString()
 
 void Task::setOffset(int newOffset)
 {
-	if (newOffset < 0) throw std::logic_error("offset must be > 0");
+	if (newOffset < 0) throw std::logic_error("setOffset : offset must be > 0");
 	_offset = newOffset;
 }
 
@@ -59,7 +59,8 @@ int Task::getOffset()
 
 void Task::setPeriod(int newPeriod)
 {
-	if (newPeriod < 0) throw std::logic_error("period must be > 0");
+	if (newPeriod <= 0) throw std::logic_error("setPeriod : period must be > 0");
+	//if (newPeriod < getWcet()) throw std::logic_error("setPeriod : period must be >= wcet");
 	_period = newPeriod;
 }
 
@@ -70,7 +71,8 @@ int Task::getPeriod()
 
 void Task::setDeadline(int newDeadline)
 {
-	if (newDeadline < 0) throw std::logic_error("deadline must be > 0");
+	if (newDeadline <= 0) throw std::logic_error("setDeadline : deadline must be > 0");
+	//if (newDeadline < getWcet()) throw std::logic_error("setDeadline : deadline must be >= wcet");
 	_deadline = newDeadline;
 }
 
@@ -81,7 +83,9 @@ int Task::getDeadline()
 
 void Task::setWcet(int newWcet)
 {
-	if (newWcet < 0) throw std::logic_error("wcet must be > 0");
+	if (newWcet <= 0) throw std::logic_error("setWcet : wcet must be > 0");
+	//if (newWcet > getDeadline()) throw std::logic_error("setWcet : deadline must be >= wcet");
+	//if (newWcet > getPeriod()) throw std::logic_error("setWcet : period must be >= wcet");
 	_wcet = newWcet;
 }
 
