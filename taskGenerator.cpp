@@ -27,7 +27,7 @@ int systemUtilization(vector<Task> tasks)
 	return current_utiliz;
 }
 
-vector<Task> generateTasks(int utPerc, int numT, int precision = 50)
+vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 {
 	if (utPerc > numT * 100)
 		throw logic_error("generateTasks : Impossible to do a feasible system with the given parameters");
@@ -51,7 +51,8 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 50)
 	}
 
 
-	// modify tasks to fit the utilization parameter
+	// modify all tasks to get closer to the utilization parameter
+	// This will not work exactly because of discrete time (and because each task must respect Ui < 100%)
 
 	float current_utiliz = systemUtilization(tasks);
 
@@ -64,6 +65,9 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 50)
 		{
 			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
 			tasks[i].setWcet(max(newWcet, 1));
+			// wcet must be < deadline and period
+			if (tasks[i].getWcet() > tasks[i].getPeriod())
+				tasks[i].setPeriod(tasks[i].getWcet());
 			if (tasks[i].getWcet() > tasks[i].getDeadline())
 				tasks[i].setDeadline(tasks[i].getWcet());
 		}
@@ -83,8 +87,46 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 50)
 		cout << tasks[t].asString() << endl;
 	}
 
+	// Try to get closer and closer to the desired utilization by small modifications
+	current_utiliz = systemUtilization(tasks);
+	unsigned int loop_counter = 0;
+	while(abs(current_utiliz - utPerc) > precision)
+	{
+		bool mustDecreaseUtil = (current_utiliz - utPerc > 0);
+
+		int rndTaskP = rand() % tasks.size();
+		Task* rndTask = &tasks[rndTaskP];
+
+		// which small modification do we make? --> random choice
+		int rollOfDice = rand() % 2;
+		if (rollOfDice == 0) // change wcet
+		{
+			int oldWcet = rndTask->getWcet();
+			// can we change wcet ?
+			if ((mustDecreaseUtil and (oldWcet == 1))
+				or ((not mustDecreaseUtil) and (
+					(oldWcet == rndTask->getDeadline()) or (oldWcet == rndTask->getPeriod()))))
+				continue;
+			int newWcet = mustDecreaseUtil ? --oldWcet : ++oldWcet;
+			rndTask->setWcet(newWcet);
+		}
+		else // change deadline
+		{
+			int oldDeadline = rndTask->getDeadline();
+			// can we change deadline ?
+			if ((mustDecreaseUtil and oldDeadline >= rndTask->getPeriod())
+				or ((not mustDecreaseUtil) and oldDeadline == 0))
+				continue;
+			int newDeadline = mustDecreaseUtil ? ++oldDeadline : --oldDeadline;
+			rndTask->setDeadline(newDeadline);
+		}
+
+		current_utiliz = systemUtilization(tasks);
+		++loop_counter;
+	}
+
 	cout << "best utilization I could do : " << systemUtilization(tasks) << " (and not " << utPerc << ")" << endl;
-	cout << "delta : " << abs(utPerc - systemUtilization(tasks)) << "\tprecision : " << precision << endl;
+	cout << "delta : " << abs(utPerc - systemUtilization(tasks)) << "\tprecision : " << precision << "\tloops : "<< loop_counter << endl;
 	return tasks;
 }
 
