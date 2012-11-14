@@ -13,6 +13,7 @@ public:
 	virtual int computeStudyInterval() = 0;
 
 	void run();
+	void generateJobs();
 	bool result();
 	string report();
 
@@ -21,6 +22,7 @@ public:
 	int deltaT;
 	int numberOfCPU;
 	vector<Task> tasks;
+	vector<Jobs> jobs;
 
 	int preemption_counter;
 	int migration_counter;

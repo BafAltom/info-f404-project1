@@ -33,7 +33,6 @@ private:
 	int _period;
 	int _deadline;
 	int _wcet;
-
 };
 
 ostream& operator << (ostream& s, Task t);

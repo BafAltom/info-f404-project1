@@ -6,13 +6,34 @@ Simulation::Simulation() : t(0), deltaT(1), numberOfCPU(1), tasks(vector<Task>()
 Simulation::Simulation(int nCPU, vector<Task> t) : t(0), deltaT(1), numberOfCPU(nCPU), tasks(t), preemption_counter(0), migration_counter(0), number_of_core_used(0), idle_time_counter(0)
 {	}
 
-void Simulation::run()
+void Simulation::generateJobs(tasks, studyInterval)
 {
+	for t in tasks:
+		time = t.getOffset();
+		while (time < studyInterval)
+		{
+			jobs.push_back(Jobs(t, time));
+			time += t.getPeriod()
+		}
+}
+
+void Simulation::runGlobal()
+{
+	vector<Task> CPUs;
 	int studyInterval = computeStudyInterval();
+	generateJobs();
 	while (t <= studyInterval)
 	{
 		t += deltaT;
 		// TODO (a lot)...
+		vector<Task> activeJobs = activeJobs(t);
+		for i in CPUs
+			if (not activeJobs.empty())
+				if i.empty then CPU.append(min(activeJobs));
+				else if (min(activeTasks) < i) i = min(activeJobs);
+				CPU.task.computationLeft --;
+				if (i.task.computationLeft == 0)
+					i.clear;
 	}
 }
 
