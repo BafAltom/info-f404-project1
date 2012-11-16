@@ -1,39 +1,207 @@
 #include "simulation.hpp"
 
-Simulation::Simulation() : t(0), deltaT(1), numberOfCPU(1), tasks(vector<Task>()), preemption_counter(0), migration_counter(0), number_of_core_used(0), idle_time_counter(0)
+Simulation::Simulation() :
+	_t(0),
+	_deltaT(1),
+	_tasks(vector<Task>()),
+	_jobs(vector<Job>()),
+	_CPUs(vector<Job*>(1,NULL)),
+	preemption_counter(0),
+	migration_counter(0),
+	number_of_core_used(0),
+	idle_time_counter(0)
 {	}
 
-Simulation::Simulation(int nCPU, vector<Task> t) : t(0), deltaT(1), numberOfCPU(nCPU), tasks(t), preemption_counter(0), migration_counter(0), number_of_core_used(0), idle_time_counter(0)
+Simulation::Simulation(int nCPU, vector<Task> t) :
+	_t(0),
+	_deltaT(1),
+	_tasks(t),
+	_jobs(vector<Job>()),
+	_CPUs(vector<Job*>(nCPU, NULL)),
+	preemption_counter(0),
+	migration_counter(0),
+	number_of_core_used(0),
+	idle_time_counter(0)
 {	}
 
-void Simulation::generateJobs(tasks, studyInterval)
+void Simulation::generateJobs(int studyInterval)
+// Paul me dit que c'est mieux de seulement générer un job quand le précédent commence, mais bref.
 {
-	for t in tasks:
-		time = t.getOffset();
-		while (time < studyInterval)
+	// clear current jobs list
+	_jobs.clear();
+
+	// generate new jobs
+	for (unsigned int i = 0; i < _tasks.size(); ++i)
+	{
+		int t = _tasks[i].getOffset();
+		while (t < studyInterval)
 		{
-			jobs.push_back(Jobs(t, time));
-			time += t.getPeriod()
+			_jobs.push_back(Job(_tasks[i], t));
+			t += _tasks[i].getPeriod();
 		}
+	}
 }
 
+int Simulation::computeStudyInterval()
+{
+	// stupid way of doing it : MUL[i=0:n] Ti
+	int mul = 1;
+	for (vector<Task>::iterator it = _tasks.begin(); it != _tasks.end(); it = it + 1)
+	{
+		mul *= it->getPeriod();
+	}
+	return mul;
+}
+
+vector<Job*> Simulation::getActiveJobs()
+// !! does not return jobs currently computed by a CPU (which is good but not intuitive)
+{
+	vector<Job*> activeJobs;
+	int currentTime = _t;
+	for (unsigned int i = 0; i < _jobs.size(); ++i)
+	{
+		if (currentTime >= _jobs[i].getStartTime()
+		and currentTime < _jobs[i].getAbsoluteDeadline()  // < deadline or <= deadline ???
+		and not _jobs[i].getComputationLeft() == 0
+		and not isInCPUs(&_jobs[i]))
+		{
+			activeJobs.push_back(&_jobs[i]);
+		}
+	}
+	return activeJobs;
+}
+
+bool Simulation::isInCPUs(Job* j)
+{
+	if (j == NULL)
+		throw std::logic_error("isInCPUs : j is NULL");
+
+	for (unsigned int i = 0; i < _CPUs.size(); ++i)
+		if (j == _CPUs[i])
+			return true;
+	return false;
+}
+
+Job* Simulation::getEarliestDeadline(vector<Job*> vJobs)
+{
+	// edge cases
+	if (vJobs.empty())
+		throw std::logic_error("getEarliestDeadline : vJobs is empty");
+	if (vJobs.size() == 1)
+		return vJobs[0];
+
+	Job* min_deadline_job = vJobs[0];
+	for (unsigned int i = 1; i < vJobs.size(); ++i)
+	{
+		int this_deadline = vJobs[i]->getAbsoluteDeadline();
+		if (this_deadline < min_deadline_job->getAbsoluteDeadline())
+			min_deadline_job = vJobs[i];
+	}
+	return min_deadline_job;
+}
+
+int Simulation::positionOfMaxDeadlineInCPUs()
+// return -1 if all CPUs are idle
+{
+	if (_CPUs.empty())
+		throw std::logic_error("positionOfMaxDeadlineInCPUs : No CPUs !");
+	if (_CPUs.size() == 1)
+		return 0;
+
+	int pos_max_deadline = -1;
+	int max_deadline = 0;
+	for (unsigned int i = 1; i < _CPUs.size(); ++i)
+	{
+		if (_CPUs[i] == NULL) continue;
+
+		int this_deadline = _CPUs[i]->getAbsoluteDeadline();
+		if (this_deadline > max_deadline)
+		{
+			max_deadline = this_deadline;
+			pos_max_deadline = i;
+		}
+	}
+	return pos_max_deadline;
+}
+
+int Simulation::positionOfFirstIdleCPU()
+// return -1 if all CPUs are busy
+{
+	if (_CPUs.empty())
+		throw std::logic_error("positionOfFirstIdleCPU : No CPUs !");
+
+	for (unsigned int i = 0; i < _CPUs.size(); ++i)
+		if (_CPUs[i] == NULL)
+			return (int)i;
+	return -1;
+}
+
+// TODO:
+// - active jobs must be organized in a min-deadline-heap
+// - CPUs must be organized in a max-deadline-of-its-job-heap
+// this will simplify the code a lot :)
 void Simulation::runGlobal()
 {
-	vector<Task> CPUs;
 	int studyInterval = computeStudyInterval();
-	generateJobs();
-	while (t <= studyInterval)
+	generateJobs(studyInterval);
+	_t = 0;
+	while (_t < studyInterval) // main loop
 	{
-		t += deltaT;
-		// TODO (a lot)...
-		vector<Task> activeJobs = activeJobs(t);
-		for i in CPUs
+		vector<Job*> activeJobs = getActiveJobs();
+		Job* earliestDeadlineJob = activeJobs.empty() ? NULL : getEarliestDeadline(activeJobs);
+		int biggerDeadlineCPU = positionOfMaxDeadlineInCPUs(); // -1 if all CPUs are idle
+		int firstIdleCPU = positionOfFirstIdleCPU(); // -1 if all CPUs are busy
+		bool availableCPUs = (firstIdleCPU != -1);
+
+		// scheduling : assign which jobs go to which CPUs
+		while (not activeJobs.empty()
+			and (availableCPUs
+				or earliestDeadlineJob->getAbsoluteDeadline() < _CPUs[biggerDeadlineCPU]->getAbsoluteDeadline()))
+		{
+			// If we get in the loop, we know that the earliest-deadline active job should get a CPU
+			
+			if (availableCPUs)
+			{
+				assert(_CPUs[firstIdleCPU] == NULL);
+				_CPUs[firstIdleCPU] = earliestDeadlineJob;
+			}
+			else // all CPUs are busy, preempt the one with the latest deadline
+			{
+				assert(_CPUs[biggerDeadlineCPU]->getAbsoluteDeadline() > earliestDeadlineJob->getAbsoluteDeadline());
+				_CPUs[biggerDeadlineCPU] = earliestDeadlineJob;
+				preemption_counter++;
+			}
+
+			// update variables (should be in a function, duplicate code = beaaaarg)
+			activeJobs = getActiveJobs();
+			earliestDeadlineJob = activeJobs.empty() ? NULL : getEarliestDeadline(activeJobs);
+			biggerDeadlineCPU = positionOfMaxDeadlineInCPUs();
+			firstIdleCPU = positionOfFirstIdleCPU();
+			availableCPUs = (firstIdleCPU != -1);
+		}
+
+		// launch computation for this point in time
+		for (unsigned int i = 0; i < _CPUs.size(); ++i)
+			if (_CPUs[i] != NULL)
+				_CPUs[i]->giveCPU(1);
+
+		/* OLD CODE (kept until we have a working code above)
+
+		for (unsigned int i = 0; i < _CPUs.size(); ++i)
+		{
 			if (not activeJobs.empty())
-				if i.empty then CPU.append(min(activeJobs));
-				else if (min(activeTasks) < i) i = min(activeJobs);
-				CPU.task.computationLeft --;
-				if (i.task.computationLeft == 0)
-					i.clear;
+			{
+				if ((_CPUs[i] == NULL)
+				or (getEarliestDeadline(activeJobs)->getAbsoluteDeadline() < _CPUs[i]->getAbsoluteDeadline()))
+					_CPUs[i] = getEarliestDeadline(activeJobs);
+				else
+					_CPUs[i]->giveCPU(1);
+				if (_CPUs[i].getComputationLeft() == 0)
+					_CPUs[i] = NULL;
+			}
+		}
+		*/
+		_t += _deltaT;
 	}
 }
 

@@ -8,8 +8,6 @@ Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _p
 
 Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0)
 {
-
-	string s = "string, to, split";
 	istringstream ss(parseString);
 	string parsedStrings[4];
 	int counter = 0;

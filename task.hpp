@@ -1,3 +1,6 @@
+#ifndef TASK_H
+#define TASK_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -36,3 +39,5 @@ private:
 };
 
 ostream& operator << (ostream& s, Task t);
+
+#endif
