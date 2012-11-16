@@ -14,8 +14,8 @@ using namespace std;
 
 int MAX_OFFSET = 20;
 int MIN_DEADLINE = 1;
-int MAX_DEADLINE = 30;
-int MAX_PERIOD = 200;
+int MAX_DEADLINE = 20;
+int MAX_PERIOD = 20;
 
 int systemUtilization(vector<Task> tasks)
 {
@@ -57,7 +57,7 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 
 	for (unsigned int i = 0; i < tasks.size(); ++i)
 	{
-		// modify wcet or deadline? --> random choice
+		// modify wcet or period? --> random choice
 		if (rand()%2 == 0)
 		{
 			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
@@ -71,11 +71,11 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		}
 		else
 		{
-			int newDeadline = (int) (tasks[i].getDeadline() * (1/utilizFactor));
-			tasks[i].setDeadline(max(newDeadline, 1));
+			int newPeriod = (int) (tasks[i].getPeriod() * (1/utilizFactor));
+			tasks[i].setPeriod(max(newPeriod, 1));
 
-			if (tasks[i].getWcet() > tasks[i].getDeadline())
-				tasks[i].setWcet(tasks[i].getDeadline());
+			if (tasks[i].getWcet() > tasks[i].getPeriod())
+				tasks[i].setWcet(tasks[i].getPeriod());
 		}
 	}
 
@@ -114,11 +114,11 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 			int newWcet = mustDecreaseUtil ? --oldWcet : ++oldWcet;
 			rndTask->setWcet(newWcet);
 		}
-		else // change deadline
+		else // change period
 		{
-			int oldDeadline = rndTask->getDeadline();
-			int newDeadline = mustDecreaseUtil ? ++oldDeadline : --oldDeadline;
-			rndTask->setDeadline(newDeadline);
+			int oldPeriod = rndTask->getPeriod();
+			int newPeriod = mustDecreaseUtil ? ++oldPeriod : --oldPeriod;
+			rndTask->setPeriod(newPeriod);
 		}
 
 		current_utiliz = systemUtilization(tasks);

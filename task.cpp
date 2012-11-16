@@ -8,8 +8,9 @@ Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _p
 
 Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0)
 {
+// This function does not check for correctness of input
 	istringstream ss(parseString);
-	string parsedStrings[4];
+	string parsedStrings[5]; // 4 parameters + endline
 	int counter = 0;
 	while (!ss.eof())
 	{
@@ -22,12 +23,25 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0)
 	_period = atoi(parsedStrings[1].c_str());
 	_deadline = atoi(parsedStrings[2].c_str());
 	_wcet = atoi(parsedStrings[3].c_str());
+}
 
+vector<Task> Task::generateFromString(string tasks_text)
+{
+	vector<Task> tasks;
+	istringstream ss(tasks_text);
+	while (!ss.eof())
+	{
+		string one_task_text;
+		getline(ss, one_task_text,'\n');
+		if (one_task_text.size() > 4) // empty lines
+			tasks.push_back(Task(one_task_text));
+	}
+	return tasks;
 }
 
 int Task::getUtilizationPercent()
 {
-	return (_wcet*100/_deadline);
+	return (_wcet*100/_period);
 }
 
 string Task::asString()

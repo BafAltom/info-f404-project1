@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
+#include <algorithm>
 #include <stdio.h>
 #include <assert.h>
 #include "task.hpp"
@@ -14,9 +16,9 @@ class Simulation
 public:
 	Simulation();
 	Simulation(int nCPU, vector<Task> t);
-	virtual ~Simulation() = 0;
+	virtual ~Simulation();
 
-	virtual int computeStudyInterval();
+	virtual long computeStudyInterval();
 
 	bool isInCPUs(Job* j);
 	Job* getEarliestDeadline(vector<Job*> vJobs);

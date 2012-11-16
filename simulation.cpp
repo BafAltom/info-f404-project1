@@ -24,6 +24,9 @@ Simulation::Simulation(int nCPU, vector<Task> t) :
 	idle_time_counter(0)
 {	}
 
+Simulation::~Simulation()
+{	}
+
 void Simulation::generateJobs(int studyInterval)
 // Paul me dit que c'est mieux de seulement générer un job quand le précédent commence, mais bref.
 {
@@ -42,15 +45,30 @@ void Simulation::generateJobs(int studyInterval)
 	}
 }
 
-int Simulation::computeStudyInterval()
+
+int ppcm(int X,int Y)// from http://www.cppfrance.com/codes/PPCM-DEUX-NOMBRES-TOUT-COMPILATEUR_9638.aspx
 {
-	// stupid way of doing it : MUL[i=0:n] Ti
-	int mul = 1;
-	for (vector<Task>::iterator it = _tasks.begin(); it != _tasks.end(); it = it + 1)
+	int A = X;
+	int B = Y;
+	while (A!=B)
 	{
-		mul *= it->getPeriod();
+		while (A>B) B=B+Y;
+		while (A<B) A=A+X;
 	}
-	return mul;
+	return A;
+}
+
+long Simulation::computeStudyInterval()
+{
+	// TODO : should return 2*LCM(periods) + max offset
+	int current_ppcm = 1;
+	for (vector<Task>::iterator it = _tasks.begin(); it != _tasks.end(); ++it)
+	{
+		current_ppcm = ppcm(current_ppcm, it->getPeriod());
+		cout << "current_ppcm : " << current_ppcm << endl;
+	}
+	return 2*current_ppcm;
+
 }
 
 vector<Job*> Simulation::getActiveJobs()
@@ -142,11 +160,13 @@ int Simulation::positionOfFirstIdleCPU()
 // this will simplify the code a lot :)
 void Simulation::runGlobal()
 {
-	int studyInterval = computeStudyInterval();
+	long studyInterval = computeStudyInterval();
 	generateJobs(studyInterval);
 	_t = 0;
+	cout << "study interval : " << studyInterval << endl;
 	while (_t < studyInterval) // main loop
 	{
+		if (_t % 1000 == 0) cout << "t : " << _t << endl;
 		vector<Job*> activeJobs = getActiveJobs();
 		Job* earliestDeadlineJob = activeJobs.empty() ? NULL : getEarliestDeadline(activeJobs);
 		int biggerDeadlineCPU = positionOfMaxDeadlineInCPUs(); // -1 if all CPUs are idle
@@ -159,7 +179,7 @@ void Simulation::runGlobal()
 				or earliestDeadlineJob->getAbsoluteDeadline() < _CPUs[biggerDeadlineCPU]->getAbsoluteDeadline()))
 		{
 			// If we get in the loop, we know that the earliest-deadline active job should get a CPU
-			
+
 			if (availableCPUs)
 			{
 				assert(_CPUs[firstIdleCPU] == NULL);
@@ -182,27 +202,28 @@ void Simulation::runGlobal()
 
 		// launch computation for this point in time
 		for (unsigned int i = 0; i < _CPUs.size(); ++i)
+		{
 			if (_CPUs[i] != NULL)
 				_CPUs[i]->giveCPU(1);
-
-		/* OLD CODE (kept until we have a working code above)
-
-		for (unsigned int i = 0; i < _CPUs.size(); ++i)
-		{
-			if (not activeJobs.empty())
-			{
-				if ((_CPUs[i] == NULL)
-				or (getEarliestDeadline(activeJobs)->getAbsoluteDeadline() < _CPUs[i]->getAbsoluteDeadline()))
-					_CPUs[i] = getEarliestDeadline(activeJobs);
-				else
-					_CPUs[i]->giveCPU(1);
-				if (_CPUs[i].getComputationLeft() == 0)
-					_CPUs[i] = NULL;
-			}
+			/*those two 'if's must NOT be combined!!*/
+			if (_CPUs[i] != NULL and _CPUs[i]->getComputationLeft() == 0)
+				_CPUs[i] = NULL;
 		}
-		*/
+
+		// advance time
 		_t += _deltaT;
 	}
+
+	bool success = true;
+	for (vector<Job>::iterator it = _jobs.begin(); it != _jobs.end(); it++)
+	{
+		if (it->getComputationLeft() != 0)
+		{
+			success = false;
+			cout << "FAIL!!!! job : " << it->asString() << endl;
+		}
+	}
+	if (success) cout << "SUCCESS!!" << endl;
 }
 
 bool Simulation::result()
