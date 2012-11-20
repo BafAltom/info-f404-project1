@@ -32,12 +32,15 @@ public:
 	int getDeadline();
 	void setWcet(int newWcet);
 	int getWcet();
+	void setUtilisation(float newUtilisation);
+	float getUtilisation();
 
 private:
 	int _offset;
 	int _period;
 	int _deadline;
 	int _wcet;
+	float _utilisation;
 };
 
 ostream& operator << (ostream& s, Task t);
