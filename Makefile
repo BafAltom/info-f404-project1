@@ -7,13 +7,13 @@ EXEC=simGlobalEDF taskGenerator
 
 all: $(EXEC)
 
-simGlobalEDF: simGlobalEDF.o task.o simulation.o job.o
+simGlobalEDF: simGlobalEDF.o task.o simulation.o job.o EDFComp.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
-simEDFk: simEDFk.o task.o simulation.o job.o
+simEDFk: simEDFk.o task.o simulation.o job.o EDFComp.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
-taskGenerator: taskGenerator.o task.o
+taskGenerator: taskGenerator.o task.o EDFComp.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cpp

@@ -13,9 +13,11 @@ using namespace std;
 // GENERATORS CONSTANTS
 
 int MAX_OFFSET = 20;
+int MAX_PERIOD = 20;
+int MIN_PERIOD = 2;
+// useless (implicit deadline)
 int MIN_DEADLINE = 1;
 int MAX_DEADLINE = 20;
-int MAX_PERIOD = 20;
 
 int systemUtilization(vector<Task> tasks)
 {
@@ -36,8 +38,8 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 	for (int i = 0; i < numT; ++i)
 	{
 		int offset = (int) (rand() % MAX_OFFSET);
-		int deadline = (int) ((rand() % (MAX_DEADLINE - MIN_DEADLINE)) + MIN_DEADLINE);
-		int period = (int) ((rand() % (MAX_PERIOD - deadline)) + deadline);
+		int period = (int) ((rand() % (MAX_PERIOD - MIN_PERIOD)) + MIN_PERIOD);
+		int deadline = period;
 		int wcet = (deadline == 1) ? 1 : (int) ((rand() % (deadline - 1)) + 1);
 
 		tasks.push_back(Task(offset, period, deadline, wcet));
