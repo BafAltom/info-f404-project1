@@ -1,12 +1,12 @@
 #include "task.hpp"
 
-Task::Task() : _offset(0), _period(0), _deadline(0), _wcet(0)
+Task::Task() : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0)
 {	}
 
-Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet)
+Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet), _utilisation(wcet/period)
 {	}
 
-Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0)
+Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0)
 {
 // This function does not check for correctness of input
 	istringstream ss(parseString);
@@ -23,6 +23,7 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0)
 	_period = atoi(parsedStrings[1].c_str());
 	_deadline = atoi(parsedStrings[2].c_str());
 	_wcet = atoi(parsedStrings[3].c_str());
+	_utilisation = _wcet/_period;
 }
 
 vector<Task> Task::generateFromString(string tasks_text)
@@ -104,6 +105,19 @@ void Task::setWcet(int newWcet)
 int Task::getWcet()
 {
 	return _wcet;
+}
+
+void Task::setUtilisation(float newUtilisation)
+{
+	if (newUtilisation <= 0) throw std::logic_error("newUtilisation : utilisation must be > 0");
+	//if (newWcet > getDeadline()) throw std::logic_error("setWcet : deadline must be >= wcet");
+	//if (newWcet > getPeriod()) throw std::logic_error("setWcet : period must be >= wcet");
+	_utilisation = newUtilisation;
+}
+
+float Task::getUtilisation()
+{
+	return _utilisation;
 }
 
 ostream& operator << (ostream& s, Task t)

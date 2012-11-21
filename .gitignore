@@ -1,6 +1,8 @@
 # executables
 main
 taskGenerator
+simEDFk
+simGlobalEDF
 
 #output files
 out*
