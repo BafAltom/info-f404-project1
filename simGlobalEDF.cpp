@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <exception>
+#include <deque>
 using namespace std;
 
 #include "task.hpp"
@@ -22,7 +23,7 @@ int main(int argc, char** argv)
 		}
 		tasks_text += "\n";
 	}
-	vector<Task> tasks_generated = Task::generateFromString(tasks_text);
+	deque<Task> tasks_generated = Task::generateFromString(tasks_text);
 
 	cout << "generated " << tasks_generated.size() << " tasks." << endl;
 

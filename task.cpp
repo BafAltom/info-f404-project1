@@ -26,9 +26,9 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0),
 	_utilisation = _wcet/_period;
 }
 
-vector<Task> Task::generateFromString(string tasks_text)
+deque<Task> Task::generateFromString(string tasks_text)
 {
-	vector<Task> tasks;
+	deque<Task> tasks;
 	istringstream ss(tasks_text);
 	while (!ss.eof())
 	{

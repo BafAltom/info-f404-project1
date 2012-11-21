@@ -2,7 +2,7 @@
 #define SIMULATION_H
 
 #include <iostream>
-#include <vector>
+#include <deque>
 #include <set>
 #include <algorithm>
 #include <stdio.h>
@@ -15,18 +15,19 @@ class Simulation
 {
 public:
 	Simulation();
-	Simulation(int nCPU, vector<Task> t);
+	Simulation(int nCPU, deque<Task> t);
 	virtual ~Simulation();
 
 	virtual long computeStudyInterval();
 
 	bool isInCPUs(Job* j);
-	Job* getEarliestDeadline(vector<Job*> vJobs);
+	Job* getEarliestDeadline(deque<Job*> vJobs);
 	int positionOfMaxDeadlineInCPUs();
 	int positionOfFirstIdleCPU();
 	void runGlobal();
 	void generateJobs(int studyInterval);
-	vector<Job*> getActiveJobs();
+	deque<Job*> getActiveJobs();
+	void cleanJobs(int t);
 	bool result();
 
 	string report();
@@ -34,9 +35,9 @@ public:
 	// everything is public
 	int _t;
 	int _deltaT;
-	vector<Task> _tasks;
-	vector<Job> _jobs;
-	vector<Job*> _CPUs;
+	deque<Task> _tasks;
+	deque<Job> _jobs;
+	deque<Job*> _CPUs;
 
 	// not yet implemented
 	int preemption_counter;

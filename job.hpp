@@ -18,11 +18,12 @@ public:
 	Job();
 	Job(Task task, int currentTime);
 
-	void giveCPU(int duration);
+	void giveCPU(int duration, int CPU_id);
 
 	int getAbsoluteDeadline();
 	int getComputationLeft();
 	int getStartTime();
+	int getLastCPU_Id();
 
 	string asString();
 
@@ -30,6 +31,7 @@ private:
 	Task _task;
 	int _startTime;
 	int _computationLeft;
+	int _lastCPU_id;
 };
 
 ostream& operator << (ostream& s, Job j);

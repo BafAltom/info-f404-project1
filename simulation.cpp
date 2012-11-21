@@ -3,21 +3,21 @@
 Simulation::Simulation() :
 	_t(0),
 	_deltaT(1),
-	_tasks(vector<Task>()),
-	_jobs(vector<Job>()),
-	_CPUs(vector<Job*>(1,NULL)),
+	_tasks(deque<Task>()),
+	_jobs(deque<Job>()),
+	_CPUs(deque<Job*>(1,NULL)),
 	preemption_counter(0),
 	migration_counter(0),
 	number_of_core_used(0),
 	idle_time_counter(0)
 {	}
 
-Simulation::Simulation(int nCPU, vector<Task> t) :
+Simulation::Simulation(int nCPU, deque<Task> t) :
 	_t(0),
 	_deltaT(1),
 	_tasks(t),
-	_jobs(vector<Job>()),
-	_CPUs(vector<Job*>(nCPU, NULL)),
+	_jobs(deque<Job>()),
+	_CPUs(deque<Job*>(nCPU, NULL)),
 	preemption_counter(0),
 	migration_counter(0),
 	number_of_core_used(0),
@@ -27,24 +27,35 @@ Simulation::Simulation(int nCPU, vector<Task> t) :
 Simulation::~Simulation()
 {	}
 
-void Simulation::generateJobs(int studyInterval)
-// Paul me dit que c'est mieux de seulement générer un job quand le précédent commence, mais bref.
+void Simulation::generateJobs(int t)
 {
-	// clear current jobs list
-	_jobs.clear();
-
 	// generate new jobs
 	for (unsigned int i = 0; i < _tasks.size(); ++i)
 	{
-		int t = _tasks[i].getOffset();
-		while (t < studyInterval)
+		Task* task = &_tasks[i];
+		if (t % task->getPeriod() == task->getOffset())
 		{
 			_jobs.push_back(Job(_tasks[i], t));
-			t += _tasks[i].getPeriod();
 		}
 	}
 }
 
+void Simulation::cleanJobs(int t)
+{
+	// remove all jobs whose deadline is in the past (and check that they were completed successfully)
+	// ugly code :)
+	if (_jobs.empty()) return;
+	for (deque<Job>::iterator it = _jobs.begin(); it != _jobs.end() and not _jobs.empty(); it++)
+	{
+		if (it->getAbsoluteDeadline() < t)
+		{
+			assert(it->getComputationLeft() == 0);
+			it = _jobs.erase(it);
+		}
+		if (it != _jobs.end())
+			break;
+	}
+}
 
 long ppcm(int X,int Y)// from http://www.cppfrance.com/codes/PPCM-DEUX-NOMBRES-TOUT-COMPILATEUR_9638.aspx
 {
@@ -62,7 +73,7 @@ long Simulation::computeStudyInterval()
 {
 	// TODO : should return 2*LCM(periods) + max offset
 	long current_ppcm = 1;
-	for (vector<Task>::iterator it = _tasks.begin(); it != _tasks.end(); ++it)
+	for (deque<Task>::iterator it = _tasks.begin(); it != _tasks.end(); ++it)
 	{
 		current_ppcm = ppcm(current_ppcm, it->getPeriod());
 		cout << "current_ppcm : " << current_ppcm << endl;
@@ -71,10 +82,10 @@ long Simulation::computeStudyInterval()
 
 }
 
-vector<Job*> Simulation::getActiveJobs()
+deque<Job*> Simulation::getActiveJobs()
 // !! does not return jobs currently computed by a CPU (which is good but not intuitive)
 {
-	vector<Job*> activeJobs;
+	deque<Job*> activeJobs;
 	int currentTime = _t;
 	for (unsigned int i = 0; i < _jobs.size(); ++i)
 	{
@@ -100,7 +111,7 @@ bool Simulation::isInCPUs(Job* j)
 	return false;
 }
 
-Job* Simulation::getEarliestDeadline(vector<Job*> vJobs)
+Job* Simulation::getEarliestDeadline(deque<Job*> vJobs)
 {
 	// edge cases
 	if (vJobs.empty())
@@ -160,14 +171,17 @@ int Simulation::positionOfFirstIdleCPU()
 // this will simplify the code a lot :)
 void Simulation::runGlobal()
 {
+
 	long studyInterval = computeStudyInterval();
-	generateJobs(studyInterval);
+	_jobs.clear();
 	_t = 0;
 	cout << "study interval : " << studyInterval << endl;
 	while (_t < studyInterval) // main loop
 	{
-		if (_t % 1000 == 0) cout << "t : " << _t << endl;
-		vector<Job*> activeJobs = getActiveJobs();
+		generateJobs(_t);
+		cleanJobs(_t);
+		if (_t % 10000 == 0) cout << "t > " << _t << "\t/\t" << studyInterval << endl;
+		deque<Job*> activeJobs = getActiveJobs();
 		Job* earliestDeadlineJob = activeJobs.empty() ? NULL : getEarliestDeadline(activeJobs);
 		int biggerDeadlineCPU = positionOfMaxDeadlineInCPUs(); // -1 if all CPUs are idle
 		int firstIdleCPU = positionOfFirstIdleCPU(); // -1 if all CPUs are busy
@@ -200,12 +214,19 @@ void Simulation::runGlobal()
 			availableCPUs = (firstIdleCPU != -1);
 		}
 
-		// launch computation for this point in time
+		// CPUs
 		for (unsigned int i = 0; i < _CPUs.size(); ++i)
 		{
+			// compute jobs in CPUs
 			if (_CPUs[i] != NULL)
-				_CPUs[i]->giveCPU(1); // devrait filer deltaT non ???????????????????????????????????????????
-			/*those two 'if's must NOT be combined!!*/
+			{
+				if (_CPUs[i]->getLastCPU_Id() != -1 and _CPUs[i]->getLastCPU_Id() != (int) i)
+				{
+					++migration_counter;
+				}
+				_CPUs[i]->giveCPU(_deltaT, i);
+			}
+			// check if a job is done
 			if (_CPUs[i] != NULL and _CPUs[i]->getComputationLeft() == 0)
 				_CPUs[i] = NULL;
 		}
@@ -215,15 +236,19 @@ void Simulation::runGlobal()
 	}
 
 	bool success = true;
-	for (vector<Job>::iterator it = _jobs.begin(); it != _jobs.end(); it++)
+	for (deque<Job>::iterator it = _jobs.begin(); it != _jobs.end(); it++)
 	{
-		if (it->getComputationLeft() != 0)
+		if (it->getComputationLeft() != 0 and it->getAbsoluteDeadline() < studyInterval)
 		{
 			success = false;
 			cout << "FAIL!!!! job : " << it->asString() << endl;
 		}
 	}
-	if (success) cout << "SUCCESS!!" << endl;
+	if (success) 
+	{
+		cout << "SUCCESS!!" << endl;
+		cout << "preemption : " << preemption_counter << endl << "migration : " << migration_counter << endl;
+	}
 }
 
 bool Simulation::result()

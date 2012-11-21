@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
-#include <vector>
+#include <deque>
 using namespace std;
 
 class Task
@@ -17,7 +17,7 @@ public:
 	Task();
 	Task(int offset, int period, int deadline, int wcet);
 	Task(string parseString);
-	static vector<Task> generateFromString(string tasks_text);
+	static deque<Task> generateFromString(string tasks_text);
 
 	int getUtilizationPercent();
 

@@ -1,9 +1,9 @@
 #include "job.hpp"
 
-Job::Job() : _task (Task(0,0,0,0)), _startTime(0), _computationLeft(0)
+Job::Job() : _task (Task(0,0,0,0)), _startTime(0), _computationLeft(0), _lastCPU_id(-1)
 {	}
 
-Job::Job(Task task, int currentTime) : _task(task), _startTime(currentTime), _computationLeft(task.getWcet())
+Job::Job(Task task, int currentTime) : _task(task), _startTime(currentTime), _computationLeft(task.getWcet()), _lastCPU_id(-1)
 {
 	if (_startTime % _task.getPeriod() != _task.getOffset() % _task.getPeriod())
 	{
@@ -11,9 +11,10 @@ Job::Job(Task task, int currentTime) : _task(task), _startTime(currentTime), _co
 	}
 }
 
-void Job::giveCPU(int duration)
+void Job::giveCPU(int duration, int CPU_id)
 {
 	_computationLeft -= duration;
+	_lastCPU_id = CPU_id;
 }
 
 int Job::getAbsoluteDeadline()
@@ -29,6 +30,11 @@ int Job::getComputationLeft()
 int Job::getStartTime()
 {
 	return _startTime;
+}
+
+int Job::getLastCPU_Id()
+{
+	return _lastCPU_id;
 }
 
 string Job::asString()
