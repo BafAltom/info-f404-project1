@@ -46,7 +46,7 @@ void Simulation::generateJobs(int studyInterval)
 }
 
 
-int ppcm(int X,int Y)// from http://www.cppfrance.com/codes/PPCM-DEUX-NOMBRES-TOUT-COMPILATEUR_9638.aspx
+long ppcm(int X,int Y)// from http://www.cppfrance.com/codes/PPCM-DEUX-NOMBRES-TOUT-COMPILATEUR_9638.aspx
 {
 	int A = X;
 	int B = Y;
@@ -61,7 +61,7 @@ int ppcm(int X,int Y)// from http://www.cppfrance.com/codes/PPCM-DEUX-NOMBRES-TO
 long Simulation::computeStudyInterval()
 {
 	// TODO : should return 2*LCM(periods) + max offset
-	int current_ppcm = 1;
+	long current_ppcm = 1;
 	for (vector<Task>::iterator it = _tasks.begin(); it != _tasks.end(); ++it)
 	{
 		current_ppcm = ppcm(current_ppcm, it->getPeriod());
