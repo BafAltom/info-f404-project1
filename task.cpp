@@ -3,7 +3,7 @@
 Task::Task() : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0)
 {	}
 
-Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet), _utilisation(wcet/period)
+Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet), _utilisation((float)wcet/period)
 {	}
 
 Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0)
@@ -23,7 +23,7 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0),
 	_period = atoi(parsedStrings[1].c_str());
 	_deadline = atoi(parsedStrings[2].c_str());
 	_wcet = atoi(parsedStrings[3].c_str());
-	_utilisation = _wcet/_period;
+	_utilisation = (float)_wcet / _period;
 }
 
 deque<Task> Task::generateFromString(string tasks_text)
@@ -51,7 +51,8 @@ string Task::asString()
 	s << getOffset() << "\t"
 	  << getPeriod() << "\t"
 	  << getDeadline() << "\t"
-	  << getWcet();
+	  << getWcet() << "\t"
+	  << getUtilisation();
 	return s.str();
 }
 

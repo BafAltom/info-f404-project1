@@ -1,7 +1,7 @@
 CPP=g++
 CPPFLAGS=-Wall -g -pedantic -Wextra -std=c++98 -Weffc++ -Wstrict-null-sentinel
 LDFLAGS=
-EXEC=simGlobalEDF taskGenerator
+EXEC=simGlobalEDF taskGenerator simEDFk
 
 .PHONY: clean, mrproper
 
