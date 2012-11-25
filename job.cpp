@@ -1,11 +1,19 @@
 #include "job.hpp"
 
-Job::Job() : _task (Task(0,0,0,0)), _startTime(0), _computationLeft(0), _lastCPU_id(-1)
+Job::Job() :
+	_task (NULL),
+	_startTime(0),
+	_computationLeft(0),
+	_lastCPU_id(-1)
 {	}
 
-Job::Job(Task task, int currentTime) : _task(task), _startTime(currentTime), _computationLeft(task.getWcet()), _lastCPU_id(-1)
+Job::Job(Task* task, int currentTime) :
+	_task(task),
+	_startTime(currentTime),
+	_computationLeft(task->getWcet()),
+	_lastCPU_id(-1)
 {
-	if (_startTime % _task.getPeriod() != _task.getOffset() % _task.getPeriod())
+	if (_startTime % _task->getPeriod() != _task->getOffset() % _task->getPeriod())
 	{
 		throw std::logic_error("Job : given startTime does not correspond to the given task offset");
 	}
@@ -19,7 +27,7 @@ void Job::giveCPU(int duration, int CPU_id)
 
 int Job::getAbsoluteDeadline()
 {
-	return getStartTime() + _task.getDeadline();
+	return getStartTime() + _task->getDeadline();
 }
 
 int Job::getComputationLeft()

@@ -34,7 +34,7 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 
 	// Generate numT tasks randomly
 
-	vector<Task> tasks = vector<Task>();
+	vector<Task> tasks = vector<Task>(numT);
 	for (int i = 0; i < numT; ++i)
 	{
 		int offset = (int) (rand() % MAX_OFFSET);
@@ -42,7 +42,7 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		int deadline = period;
 		int wcet = (deadline == 1) ? 1 : (int) ((rand() % (deadline - 1)) + 1);
 
-		tasks.push_back(Task(offset, period, deadline, wcet));
+		tasks[i] = Task(offset, period, deadline, wcet);
 	}
 
 	cout << "Initial generation :" << endl;
@@ -65,9 +65,6 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
 			tasks[i].setWcet(max(newWcet, 1));
 
-			// wcet must be < deadline and period
-			if (tasks[i].getWcet() > tasks[i].getDeadline())
-				tasks[i].setDeadline(tasks[i].getWcet());
 			if (tasks[i].getWcet() > tasks[i].getPeriod())
 				tasks[i].setPeriod(tasks[i].getWcet());
 		}
@@ -129,6 +126,12 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		cout << "--------------------- step " << loop_counter << endl;
 		for (unsigned int t = 0; t < tasks.size(); ++t)
 			cout << tasks[t].asString() << "\tu: " << tasks[t].getUtilizationPercent() << endl;
+	}
+
+	// explicit deadline
+	for (unsigned int i =0 ; i < tasks.size(); ++i)
+	{
+		tasks[i].setDeadline(tasks[i].getPeriod());
 	}
 
 	int delta = abs(utPerc - systemUtilization(tasks));

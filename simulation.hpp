@@ -1,14 +1,14 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
-#include <iostream>
 #include <algorithm>
+#include <assert.h>
 #include <deque>
+#include <iostream>
+#include <math.h>
 #include <queue>
 #include <set>
-#include <algorithm>
 #include <stdio.h>
-#include <assert.h>
 #include "EDFComp.hpp"
 #include "task.hpp"
 #include "job.hpp"
@@ -23,14 +23,14 @@ public:
 
 	virtual long computeStudyInterval();
 
+	int maxOffsetOf(std::deque<Task> jobs);
 	bool isInCPUs(Job* j);
 	int positionOfFirstIdleCPU();
-	int findInCPUs(Job* j);
 	void runGlobal();
 	void generateNewJobs(int studyInterval);
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > getReadyJobs();
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > getRunningJobs();
-	void cleanJobs(int t);
+	void cleanAndCheckJobs(int t);
 	bool result();
 
 	string report();
@@ -44,11 +44,15 @@ public:
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > _readyJobs;
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > _runningJobs;
 
-	int preemption_counter;
-	int migration_counter;
+	long failures;
+
+	long preemption_counter; // an unfinished job leaves a CPU
+	long migration_counter; // a job which previously was on a CPU enters another CPU
 	// not yet implemented
 	int number_of_core_used;
-	int idle_time_counter;
+	int idle_time_counter; // sum of the idle time count of each CPU (!= time steps where ALL CPUs were idle)
 };
+
+template<class T> int findInDeque(T t, deque<T> aDeque);
 
 #endif

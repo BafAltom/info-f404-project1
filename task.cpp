@@ -19,6 +19,7 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0),
 		parsedStrings[counter++] =  x;
 	}
 
+
 	_offset = atoi(parsedStrings[0].c_str());
 	_period = atoi(parsedStrings[1].c_str());
 	_deadline = atoi(parsedStrings[2].c_str());
@@ -45,14 +46,17 @@ int Task::getUtilizationPercent()
 	return (_wcet*100/_period);
 }
 
-string Task::asString()
+string Task::asString(bool verbose)
 {
 	std::ostringstream s;
 	s << getOffset() << "\t"
 	  << getPeriod() << "\t"
 	  << getDeadline() << "\t"
-	  << getWcet() << "\t"
-	  << getUtilisation();
+	  << getWcet();
+	if (verbose)
+	{
+		s << "\t" << getUtilisation();
+	}
 	return s.str();
 }
 

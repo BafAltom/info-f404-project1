@@ -16,7 +16,7 @@ class Job
 {
 public:
 	Job();
-	Job(Task task, int currentTime);
+	Job(Task* task, int currentTime);
 
 	void giveCPU(int duration, int CPU_id);
 
@@ -28,7 +28,7 @@ public:
 	string asString();
 
 private:
-	Task _task;
+	Task* _task;
 	int _startTime;
 	int _computationLeft;
 	int _lastCPU_id;

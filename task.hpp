@@ -21,7 +21,7 @@ public:
 
 	int getUtilizationPercent();
 
-	string asString();
+	string asString(bool verbose = false);
 
 	// getter-setters
 	void setOffset(int newOffset);

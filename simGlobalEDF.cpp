@@ -32,6 +32,8 @@ int main(int argc, char** argv)
 	deque<Task> tasks_generated = Task::generateFromString(tasks_text);
 
 	cout << "generated " << tasks_generated.size() << " tasks." << endl;
+	for (unsigned int i = 0; i < tasks_generated.size(); ++i)
+		cout << tasks_generated[i] << endl;
 
 	Simulation s(3, tasks_generated);
 	s.runGlobal();
