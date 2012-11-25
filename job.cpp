@@ -2,8 +2,8 @@
 
 Job::Job() :
 	_task (NULL),
-	_startTime(0),
-	_computationLeft(0),
+	_startTime(-1),
+	_computationLeft(-1),
 	_lastCPU_id(-1)
 {	}
 
@@ -46,9 +46,10 @@ int Job::getLastCPU_Id()
 }
 bool Job::getPriority()
 {
-	return _task.getPriority();
+	return _task->getPriority();
 }
-Task Job::getTask()
+
+Task* Job::getTask()
 {
 	return _task;
 }
@@ -61,7 +62,10 @@ string Job::asString()
 	return s.str();
 }
 
-
+bool Job::operator==(const Job &other)
+{
+	return _task == other._task and _startTime == other._startTime;
+}
 
 ostream& operator << (ostream& s, Job j)
 {

@@ -9,6 +9,7 @@
 #include <queue>
 #include <set>
 #include <stdio.h>
+#include <vector>
 #include "EDFComp.hpp"
 #include "task.hpp"
 #include "job.hpp"
@@ -26,6 +27,7 @@ public:
 	int maxOffsetOf(std::deque<Task> jobs);
 	bool isInCPUs(Job* j);
 	int positionOfFirstIdleCPU();
+	int findInCPUs(Job* j);
 	void runGlobal();
 	void generateNewJobs(int studyInterval);
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > getReadyJobs();

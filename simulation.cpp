@@ -51,6 +51,16 @@ void Simulation::cleanAndCheckJobs(int t)
 	// remove all jobs whose deadline is in the past (and check that they were completed successfully)
 	if (_jobs.empty()) return;
 
+	// save CPUs
+	vector<Job> savedCPUs(_CPUs.size());
+	for (unsigned int i = 0; i < _CPUs.size(); ++i)
+	{
+		if (_CPUs[i] != NULL)
+		{
+			savedCPUs[i] = (*_CPUs[i]);
+		}
+	}
+
 	for (deque<Job>::iterator it = _jobs.begin(); it != _jobs.end() and not _jobs.empty(); it++)
 	{
 		if (it->getAbsoluteDeadline() < t)
@@ -65,6 +75,16 @@ void Simulation::cleanAndCheckJobs(int t)
 		}
 		if (it == _jobs.end())
 			break;
+	}
+
+	// restore CPU
+	for (unsigned int i = 0; i < _CPUs.size(); ++i)
+	{
+		if (savedCPUs[i].getStartTime() != -1) // CPU was not NULL
+		{	int posJob = findInDeque<Job>(savedCPUs[i], _jobs);
+			assert(posJob != -1);
+			_CPUs[i] = &_jobs[posJob];
+		}
 	}
 }
 
@@ -155,11 +175,7 @@ int Simulation::maxOffsetOf(std::deque<Task> tasks)
 priority_queue<Job*, std::vector<Job*>, EDFComp<false> > Simulation::getReadyJobs()
 // !! does not return Running jobs
 {
-<<<<<<< HEAD
 	cout << "READY JOBS" << endl;
-=======
-	//cout<<"------------------------------------------------------------------------------"<<endl<<"on trie ready"<<endl;
->>>>>>> 619bb5d7d1ce5f41655ed6e903f82eff3f5a9ea2
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > readyJobs;
 	int currentTime = _t;
 	for (unsigned int i = 0; i < _jobs.size(); ++i)
@@ -169,11 +185,7 @@ priority_queue<Job*, std::vector<Job*>, EDFComp<false> > Simulation::getReadyJob
 		and _jobs[i].getComputationLeft() > 0
 		and not isInCPUs(&_jobs[i]))
 		{
-<<<<<<< HEAD
 			cout << "\t" << _jobs[i] << endl;
-=======
-			//cout<<"push :"<<_jobs[i].getTask().asString()<<endl;
->>>>>>> 619bb5d7d1ce5f41655ed6e903f82eff3f5a9ea2
 			readyJobs.push(&_jobs[i]);
 		}
 	}
@@ -228,18 +240,10 @@ int Simulation::positionOfFirstIdleCPU()
 	return findInDeque<Job*>(NULL, _CPUs);
 }
 
-<<<<<<< HEAD
-=======
 int Simulation::findInCPUs(Job* j)
 // return -1 if j is not in CPUs
 {
-	if (_CPUs.empty())
-		throw std::logic_error("findInCPUs : No CPUs !");
-
-	for (unsigned int i = 0; i < _CPUs.size(); ++i)
-		if (_CPUs[i] == j)
-			return (int)i;
-	return -1;
+	return findInDeque<Job*> (j, _CPUs);
 }
 
 bool Simulation::JobNeedToBePreempted()
@@ -267,7 +271,6 @@ bool Simulation::JobNeedToBePreempted()
 // - active jobs must be organized in a min-deadline-heap
 // - CPUs must be organized in a max-deadline-of-its-job-heap
 // this will simplify the code a lot :)
->>>>>>> 619bb5d7d1ce5f41655ed6e903f82eff3f5a9ea2
 void Simulation::runGlobal()
 {
 	long studyInterval = computeStudyInterval();
@@ -314,13 +317,6 @@ void Simulation::runGlobal()
 			}
 			else // all CPUs are busy, preempt the one with the latest deadline
 			{
-<<<<<<< HEAD
-				assert(_runningJobs.top()->getAbsoluteDeadline() > _readyJobs.top()->getAbsoluteDeadline());
-				Job* oldJob = _runningJobs.top(); _runningJobs.pop();
-				Job* newJob = _readyJobs.top(); _readyJobs.pop();
-				int posOldJob = findInDeque<Job*>(oldJob, _CPUs);
-=======
-				//assert(_runningJobs.top()->getAbsoluteDeadline() > _readyJobs.top()->getAbsoluteDeadline());
 				if(_readyJobs.top()->getPriority()) // a virer si ok, juste des testes pour edfk
 				{
 					assert(_readyJobs.top()->getPriority());
@@ -331,11 +327,9 @@ void Simulation::runGlobal()
 					assert(not _runningJobs.top()->getPriority());
 					assert(_runningJobs.top()->getAbsoluteDeadline() > _readyJobs.top()->getAbsoluteDeadline());
 				}
-		
-				Job* oldJob = _runningJobs.top();
-				Job* newJob = _readyJobs.top();
-				int posOldJob = findInCPUs(oldJob);
->>>>>>> 619bb5d7d1ce5f41655ed6e903f82eff3f5a9ea2
+				Job* oldJob = _runningJobs.top(); _runningJobs.pop();
+				Job* newJob = _readyJobs.top(); _readyJobs.pop();
+				int posOldJob = findInDeque<Job*>(oldJob, _CPUs);
 				assert (posOldJob != -1);
 				_CPUs[posOldJob] = newJob;
 				_readyJobs.push(oldJob);
