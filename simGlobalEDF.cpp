@@ -1,22 +1,15 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <exception>
-#include <deque>
-#include <queue>
-using namespace std;
-
-#include "task.hpp"
-#include "job.hpp"
-#include "simulation.hpp"
-#include "EDFComp.hpp"
-
-int main(int argc, char** argv)
-{
-	//priority_queue<Job*, std::vector<Job*>, EDFComp<true> > a();
+#include "simGlobalEDF.hpp"
 
 
-	ifstream taskFile(argv[1]);
+
+simGlobalEDF::simGlobalEDF() :
+	_numberCPU(1000),
+	_tasks_generated(deque<Task>())
+{	}
+
+void simGlobalEDF::uploadTask(char* file){
+	
+	ifstream taskFile(file);
 	string tasks_text = "";
 	while (!taskFile.eof())
 	{
@@ -30,14 +23,36 @@ int main(int argc, char** argv)
 		tasks_text += "\n";
 		
 	}
-	deque<Task> tasks_generated = Task::generateFromString(tasks_text);
+	_tasks_generated = Task::generateFromString(tasks_text);
 
-	cout << "generated " << tasks_generated.size() << " tasks." << endl;
-	for (unsigned int i = 0; i < tasks_generated.size(); ++i)
-		cout << tasks_generated[i].asString(true) << endl;
+	cout << "generated " << _tasks_generated.size() << " tasks." << endl;
+	for (unsigned int i = 0; i < _tasks_generated.size(); ++i)
+		cout << _tasks_generated[i].asString(true) << endl;
+	
+}
 
-	Simulation s(3, tasks_generated);
+void simGlobalEDF::computeCPU(){
+		// a faire
+		_numberCPU=3;
+	
+}
+
+
+void simGlobalEDF::run(char* file){
+	
+	uploadTask(file);
+	computeCPU();
+	
+	Simulation s(_numberCPU, _tasks_generated);
 	s.runGlobal();
+	
+}
+
+int main(int argc, char** argv)
+{
+	simGlobalEDF globalEDF;
+	globalEDF.run(argv[1]);
 
 	return 0;
 }
+
