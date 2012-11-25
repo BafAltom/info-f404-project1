@@ -13,11 +13,9 @@ using namespace std;
 // GENERATORS CONSTANTS
 
 int MAX_OFFSET = 20;
-int MAX_PERIOD = 20;
-int MIN_PERIOD = 2;
-// useless (implicit deadline)
-int MIN_DEADLINE = 1;
-int MAX_DEADLINE = 20;
+// values generated with http://www.dcode.fr/ppcm-plus-petit-commun-multiple
+int ACCEPTED_PERIODS[19] = {2, 3, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 28, 30, 32};
+int ACCEPTED_PERIODS_size = 19;
 
 int systemUtilization(vector<Task> tasks)
 {
@@ -38,7 +36,8 @@ vector<Task> generateTasks(int utPerc, int numT, int precision)
 	for (int i = 0; i < numT; ++i)
 	{
 		int offset = (int) (rand() % MAX_OFFSET);
-		int period = (int) ((rand() % (MAX_PERIOD - MIN_PERIOD)) + MIN_PERIOD);
+		int period_pos = (int) ((rand() % ACCEPTED_PERIODS_size));
+		int period = ACCEPTED_PERIODS[period_pos];
 		int deadline = period;
 		int wcet = (deadline == 1) ? 1 : (int) ((rand() % (deadline - 1)) + 1);
 
@@ -60,7 +59,7 @@ vector<Task> generateTasks(int utPerc, int numT, int precision)
 	for (unsigned int i = 0; i < tasks.size(); ++i)
 	{
 		// modify wcet or period? --> random choice
-		if (rand()%2 == 0)
+		if (/*rand()%2*/0 == 0)
 		{
 			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
 			tasks[i].setWcet(max(newWcet, 1));
@@ -94,13 +93,13 @@ vector<Task> generateTasks(int utPerc, int numT, int precision)
 		Task* rndTask = &tasks[rndTaskP];
 
 		// which small modification do we make? --> random choice
-		int rollOfDice = rand() % 2;
+		int rollOfDice = /*rand() % 2*/0;
 
 		// Can we do this modification on this task?
 		if (mustDecreaseUtil)
 		{
 			if (rndTask->getWcet() == 1)
-				rollOfDice = 1;
+				/*rollOfDice = 1*/continue;
 		}
 		else
 		{
