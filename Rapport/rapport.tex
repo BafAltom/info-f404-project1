@@ -1,0 +1,63 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
+
+\lstset{
+language=C++,
+basicstyle=\footnotesize\fontfamily{pcr},
+backgroundcolor=\color{grey},
+numbers=left,
+numberstyle=\tiny,
+numbersep=5pt,
+showstringspaces=false,
+tabsize=3,
+breaklines=true
+}
+
+
+% Title Page
+\title{INFO-F404 Operating Systems II - Projet 1}
+\author{Chapeaux Thomas\\Dagnely Pierre}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Le but de ce projet était de construire en C++ un simulateur d'ordonnancement multiprocesseur d'un systèmes de tâches à temps réel via EDF Global ou EDF-k, ainsi qu'un générateur de systèmes de tâche permettant de spécifier le nombre de tâches du système ainsi que son utilisation globale.\\
+
+Ensuite, il nous était demandé d'utiliser ces modules pour comparer les deux algorithmes (EDF Global et EDF-k) selon le nombre de préemptions, de migrations, de coeurs utilisés et d'instants oisifs.
+
+\section{Choix d'implémentation}
+
+\subsection{Nature du simulateur}
+Notre simulateur utilise un temps discret (comme vu en cours) et est à pas constant. Il simule le système passé en paramètre avec un nombre de coeur choisi par l'utilisateur, mais contient aussi une fonction permettant de calculer ce nombre. La simulation durera le temps maximal nécessaire pour effectuer une période complète ($2*PPCM(T_i) + max(O_i)$).
+
+\subsection{Nature du système}
+Comme demandé par l'énoncé, le simulateur accepte des systèmes périodiques à départ différé et à échéance contrainte. Il ne vérifie pas la faisabilité du système avant de commencer, mais s'arrête dés qu'un travail manque son échéance.\\
+
+En pratique, les systèmes générés sont cependants à échéances implicites.
+En effet, nous avons dans ce cas des systèmes dont on peut calculer la faisabilité ($U_{max} \le 1$) et le nombre de coeurs requis ($\lceil U_{globale} \rceil$) sans trop de complexité\footnote{Précisons : Ceci est la solution proposée par Mr Goossens}.
+
+\subsection{Génération de tâches}
+La génération du système de $n$ tâches avec une utilisation $U_{globale}$ se fait en trois étapes.\\
+
+Premièrement, on génère les $n$ tâches avec des paramètres aléatoires (distribution uniforme entre deux bornes pour chaque paramètre). Le WCET est bien entendu borné par la valeur de l'échéance.\\
+
+Ensuite, on calcule le facteur d'erreur $F_u = \frac{\Sigma U_i}{U_{globale}}$ et on l'applique à toutes les tâches soit en multipliant le WCET soit en divisant la période (
+
+\subsection{Structures de données}
+
+\subsection{Boucle principale}
+
+\section{Difficultés rencontrées}
+\subsection{Intervalle d'étude}
+
+\subsection{Priorité en EDF-k}
+
+\section{Résultats}
+\end{document}          

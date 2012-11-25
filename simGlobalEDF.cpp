@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 
 	cout << "generated " << tasks_generated.size() << " tasks." << endl;
 	for (unsigned int i = 0; i < tasks_generated.size(); ++i)
-		cout << tasks_generated[i] << endl;
+		cout << tasks_generated[i].asString(true) << endl;
 
 	Simulation s(3, tasks_generated);
 	s.runGlobal();

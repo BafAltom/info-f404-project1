@@ -27,7 +27,7 @@ int systemUtilization(vector<Task> tasks)
 	return current_utiliz;
 }
 
-vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
+vector<Task> generateTasks(int utPerc, int numT, int precision)
 {
 	if (utPerc > numT * 100)
 		throw logic_error("generateTasks : Impossible to do a feasible system with the given parameters");
@@ -93,20 +93,22 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		int rndTaskP = rand() % tasks.size();
 		Task* rndTask = &tasks[rndTaskP];
 
-		// can we use this task?
+		// which small modification do we make? --> random choice
+		int rollOfDice = rand() % 2;
+
+		// Can we do this modification on this task?
 		if (mustDecreaseUtil)
 		{
 			if (rndTask->getWcet() == 1)
-				continue;
+				rollOfDice = 1;
 		}
 		else
 		{
 			if (rndTask->getUtilizationPercent() == 100)
-				continue;
+				rollOfDice = 0;
 		}
 
-		// which small modification do we make? --> random choice
-		int rollOfDice = rand() % 2;
+
 		if (rollOfDice == 0) // change wcet
 		{
 			int oldWcet = rndTask->getWcet();
@@ -126,6 +128,7 @@ vector<Task> generateTasks(int utPerc, int numT, int precision = 0)
 		cout << "--------------------- step " << loop_counter << endl;
 		for (unsigned int t = 0; t < tasks.size(); ++t)
 			cout << tasks[t].asString() << "\tu: " << tasks[t].getUtilizationPercent() << endl;
+		cout << "Global Utilization : " << systemUtilization(tasks) << endl;
 	}
 
 	// explicit deadline
@@ -151,7 +154,10 @@ int main(int argc, char** argv)
 	int utilizationPercent = 100;
 	int numberOfTasks = 10;
 	string outputName = "output_default";
+	int precision = 0;
 	
+	if (argc % 2 == 0) throw logic_error("Bad number of parameters (was odd, need even)");
+
 	// parse arguments
 	for (int i = 1; i < argc; i += 2)
 	{
@@ -159,10 +165,11 @@ int main(int argc, char** argv)
 		if (command == "-u") utilizationPercent = atoi(argv[i+1]);
 		else if (command == "-n") numberOfTasks = atoi(argv[i+1]);
 		else if (command == "-o") outputName = argv[i+1];
+		else if (command == "-p") precision = atoi(argv[i+1]);
 		else throw logic_error("parameter command : '" + command + "' not recognized");
 	}
 
-	vector<Task> tasks = generateTasks(utilizationPercent, numberOfTasks);
+	vector<Task> tasks = generateTasks(utilizationPercent, numberOfTasks, precision);
 
 	ofstream outfile;
 	outfile.open (outputName.c_str());

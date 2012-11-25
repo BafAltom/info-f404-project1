@@ -8,7 +8,6 @@ Simulation::Simulation() :
 	_CPUs(),
 	_readyJobs(),
 	_runningJobs(),
-	failures(0),
 	preemption_counter(0),
 	migration_counter(0),
 	number_of_core_used(0),
@@ -23,7 +22,6 @@ Simulation::Simulation(int nCPU, deque<Task> t) :
 	_CPUs(nCPU, NULL),
 	_readyJobs(),
 	_runningJobs(),
-	failures(0),
 	preemption_counter(0),
 	migration_counter(0),
 	number_of_core_used(0),
@@ -65,13 +63,16 @@ void Simulation::cleanAndCheckJobs(int t)
 	{
 		if (it->getAbsoluteDeadline() < t)
 		{
-			assert(findInDeque(&(*it), _CPUs) == -1);
 			if (it->getComputationLeft() != 0)
 			{
 				cout << "FAILURE! at t = " << t << " and job : " << (*it) << endl;
-				++failures;
+				exit(EXIT_FAILURE);
 			}
-			it = _jobs.erase(it);
+			else
+			{
+				assert(findInDeque(&(*it), _CPUs) == -1);
+				it = _jobs.erase(it);
+			}
 		}
 		if (it == _jobs.end())
 			break;
@@ -175,7 +176,6 @@ int Simulation::maxOffsetOf(std::deque<Task> tasks)
 priority_queue<Job*, std::vector<Job*>, EDFComp<false> > Simulation::getReadyJobs()
 // !! does not return Running jobs
 {
-	cout << "READY JOBS" << endl;
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > readyJobs;
 	int currentTime = _t;
 	for (unsigned int i = 0; i < _jobs.size(); ++i)
@@ -185,7 +185,6 @@ priority_queue<Job*, std::vector<Job*>, EDFComp<false> > Simulation::getReadyJob
 		and _jobs[i].getComputationLeft() > 0
 		and not isInCPUs(&_jobs[i]))
 		{
-			cout << "\t" << _jobs[i] << endl;
 			readyJobs.push(&_jobs[i]);
 		}
 	}
@@ -216,13 +215,11 @@ priority_queue<Job*, std::vector<Job*>, EDFComp<false> > Simulation::getReadyJob
 
 priority_queue<Job*, std::vector<Job*>, EDFComp<true> > Simulation::getRunningJobs()
 {
-	cout << "RUNNING JOBS" << endl;
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > runningJobs;
 	for (deque<Job*>::iterator it = _CPUs.begin(); it != _CPUs.end(); it++)
 	{
 		if (*it != NULL)
 		{
-			cout << "\t" << (*it)->asString() << endl;
 			runningJobs.push(*it);
 		}
 	}
@@ -281,8 +278,9 @@ void Simulation::runGlobal()
 	cout << "study interval : " << studyInterval << endl;
 	while (_t < studyInterval) // main loop
 	{
-		cout << endl << "t: " << _t << endl;
+		//cout << endl << "t: " << _t << endl;
 
+		/*
 		cout << "initial CPUs" << endl;
 		for (unsigned int i = 0; i < _CPUs.size(); ++i)
 		{
@@ -291,6 +289,7 @@ void Simulation::runGlobal()
 				cout << _CPUs[i]->asString();
 			cout << endl;
 		}
+		*/
 
 		generateNewJobs(_t);
 		if (_t % 10000 == 0) cout << "t > " << _t << "\t/\t" << studyInterval << endl;
@@ -313,7 +312,7 @@ void Simulation::runGlobal()
 				Job* newJob = _readyJobs.top(); _readyJobs.pop();
 				_CPUs[firstIdleCPU] = newJob;
 				_runningJobs.push(newJob);
-				cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
+				//cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
 			}
 			else // all CPUs are busy, preempt the one with the latest deadline
 			{
@@ -335,8 +334,8 @@ void Simulation::runGlobal()
 				_readyJobs.push(oldJob);
 				_runningJobs.push(newJob);
 				preemption_counter++;
-				cout << "bye to\t" << oldJob->asString() << "\tat CPU " << firstIdleCPU << endl;
-				cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
+				//cout << "bye to\t" << oldJob->asString() << "\tat CPU " << firstIdleCPU << endl;
+				//cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
 			}
 
 			// update variables (duplicate code...)
@@ -348,14 +347,14 @@ void Simulation::runGlobal()
 		}
 
 		// CPUs
-		cout << "CPUS" << endl;
+		//cout << "CPUS" << endl;
 		for (unsigned int i = 0; i < _CPUs.size(); ++i)
 		{
-			cout << "\tCPU[" << i << "]: ";
+			//cout << "\tCPU[" << i << "]: ";
 			if (_CPUs[i] != NULL)
 			{
-				cout << _CPUs[i]->asString();
-				fflush(stdout);
+				// cout << _CPUs[i]->asString();
+
 				// verifications
 				assert(findInDeque(_CPUs[i], _CPUs) == (int)i);
 				assert(_CPUs[i]->getComputationLeft() > 0);
@@ -368,25 +367,17 @@ void Simulation::runGlobal()
 				// check if a job is done
 				if (_CPUs[i]->getComputationLeft() == 0)
 				{
-					cout << "\tbye!";
+					// cout << "\tbye!";
 					_CPUs[i] = NULL;
 				}
 			else
 				++idle_time_counter;
 			}
-			cout << endl;
+			//cout << endl;
 		}
 
 		// advance time
 		_t += _deltaT;
-		cout << "final CPUs" << endl;
-		for (unsigned int i = 0; i < _CPUs.size(); ++i)
-		{
-			cout << "\tCPU[" << i << "]: ";
-			if (_CPUs[i] != NULL)
-				cout << _CPUs[i]->asString();
-			cout << endl;
-		}
 		cleanAndCheckJobs(_t);
 
 	}
@@ -405,7 +396,7 @@ string Simulation::report()
 	std::ostringstream r;
 	r << "Number of preemption = " << preemption_counter << endl
 	 << "Number of migration = " << migration_counter << endl
-	 << "Core used = " << number_of_core_used << endl
+	 << "Core used = " << _CPUs.size() << endl
 	 << "idle time  = " << idle_time_counter << endl;
 
 	return r.str();

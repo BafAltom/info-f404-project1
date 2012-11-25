@@ -59,7 +59,7 @@ string Task::asString(bool verbose)
 	  << getWcet();
 	if (verbose)
 	{
-		cout << "\t" << getUtilisation()<< "\t"
+		s << "\t|\t" << getUtilisation()<< "\t"
 		<< getPriority();
 	}
 	return s.str();
