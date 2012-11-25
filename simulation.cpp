@@ -50,7 +50,7 @@ void Simulation::cleanAndCheckJobs(int t)
 	if (_jobs.empty()) return;
 
 	// save CPUs
-	vector<Job> savedCPUs(_CPUs.size());
+	deque<Job> savedCPUs(_CPUs.size());
 	for (unsigned int i = 0; i < _CPUs.size(); ++i)
 	{
 		if (_CPUs[i] != NULL)
@@ -70,7 +70,7 @@ void Simulation::cleanAndCheckJobs(int t)
 			}
 			else
 			{
-				assert(findInDeque(&(*it), _CPUs) == -1);
+				assert(findInDeque((*it), savedCPUs) == -1);
 				it = _jobs.erase(it);
 			}
 		}
@@ -88,20 +88,6 @@ void Simulation::cleanAndCheckJobs(int t)
 		}
 	}
 }
-
-/*
-long ppcm2(long X, long Y)// from http://www.cppfrance.com/codes/PPCM-DEUX-NOMBRES-TOUT-COMPILATEUR_9638.aspx
-{
-	long A = X;
-	long B = Y;
-	while (A!=B)
-	{
-		while (A>B) B=B+Y;
-		while (A<B) A=A+X;
-	}
-	return A;
-}
-*/
 
 long ppcm(long A, long B)
 {
@@ -278,18 +264,19 @@ void Simulation::runGlobal()
 	cout << "study interval : " << studyInterval << endl;
 	while (_t < studyInterval) // main loop
 	{
-		//cout << endl << "t: " << _t << endl;
-
-		/*
-		cout << "initial CPUs" << endl;
-		for (unsigned int i = 0; i < _CPUs.size(); ++i)
+		if (DEBUG)
 		{
-			cout << "\tCPU[" << i << "]: ";
-			if (_CPUs[i] != NULL)
-				cout << _CPUs[i]->asString();
-			cout << endl;
+			cout << endl << "t: " << _t << endl;
+
+			cout << "initial CPUs" << endl;
+			for (unsigned int i = 0; i < _CPUs.size(); ++i)
+			{
+				cout << "\tCPU[" << i << "]: ";
+				if (_CPUs[i] != NULL)
+					cout << _CPUs[i]->asString();
+				cout << endl;
+			}
 		}
-		*/
 
 		generateNewJobs(_t);
 		if (_t % 10000 == 0) cout << "t > " << _t << "\t/\t" << studyInterval << endl;
@@ -312,7 +299,7 @@ void Simulation::runGlobal()
 				Job* newJob = _readyJobs.top(); _readyJobs.pop();
 				_CPUs[firstIdleCPU] = newJob;
 				_runningJobs.push(newJob);
-				//cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
+				if (DEBUG) cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
 			}
 			else // all CPUs are busy, preempt the one with the latest deadline
 			{
@@ -334,8 +321,8 @@ void Simulation::runGlobal()
 				_readyJobs.push(oldJob);
 				_runningJobs.push(newJob);
 				preemption_counter++;
-				//cout << "bye to\t" << oldJob->asString() << "\tat CPU " << firstIdleCPU << endl;
-				//cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
+				if (DEBUG) cout << "bye to\t" << oldJob->asString() << "\tat CPU " << firstIdleCPU << endl;
+				if (DEBUG) cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
 			}
 
 			// update variables (duplicate code...)
@@ -347,13 +334,13 @@ void Simulation::runGlobal()
 		}
 
 		// CPUs
-		//cout << "CPUS" << endl;
+		if (DEBUG) cout << "CPUS" << endl;
 		for (unsigned int i = 0; i < _CPUs.size(); ++i)
 		{
-			//cout << "\tCPU[" << i << "]: ";
+			if (DEBUG) cout << "\tCPU[" << i << "]: ";
 			if (_CPUs[i] != NULL)
 			{
-				// cout << _CPUs[i]->asString();
+				if (DEBUG) cout << _CPUs[i]->asString();
 
 				// verifications
 				assert(findInDeque(_CPUs[i], _CPUs) == (int)i);
@@ -367,13 +354,13 @@ void Simulation::runGlobal()
 				// check if a job is done
 				if (_CPUs[i]->getComputationLeft() == 0)
 				{
-					// cout << "\tbye!";
+					if (DEBUG) cout << "\tbye!";
 					_CPUs[i] = NULL;
 				}
 			else
 				++idle_time_counter;
 			}
-			//cout << endl;
+			if (DEBUG) cout << endl;
 		}
 
 		// advance time
@@ -412,7 +399,9 @@ int findInDeque (T t, deque<T> aDeque)
 
 	for (unsigned int i = 0; i < aDeque.size(); ++i)
 		if (aDeque[i] == t)
+		{
 			return (int)i;
+		}
 	return -1;
 }
 
