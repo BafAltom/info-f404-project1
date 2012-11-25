@@ -28,6 +28,7 @@ int main(int argc, char** argv)
 			tasks_text += temp + "\t";
 		}
 		tasks_text += "\n";
+		
 	}
 	deque<Task> tasks_generated = Task::generateFromString(tasks_text);
 

@@ -29,10 +29,10 @@ void simEDFk::uploadTask(char* file){
 	
 
 	cout << "generated " << _initialTasks.size() << " tasks." << endl;
-	for(unsigned int i=0; i< _initialTasks.size(); ++i)
+	/*for(unsigned int i=0; i< _initialTasks.size(); ++i)
 	{
 		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString()<<endl;
-	}
+	}*/
 	
 	
 }
@@ -42,13 +42,8 @@ void simEDFk::computeCPUandK(){
 	//trie les taches par utilisation
 	sort(_initialTasks.begin(),_initialTasks.end(), taskSortCriteria);
 	
-	/*cout<<"after sort------------------------------"<<endl;
-	for(unsigned int i=0; i< _initialTasks.size(); ++i)
-	{
-		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString()<<endl;
-	}*/
 	
-	
+
 	std::vector<int> testNumberCPU;
 	
 	// On calcule les min CPU
@@ -84,7 +79,11 @@ void simEDFk::computeCPUandK(){
 
 
 void simEDFk::modifyPriority(){
-	
+	for(int i=0; i<_k; ++i)
+	{
+		_initialTasks.at(i).setPriority(true);
+		cout<<"met prior :" <<_initialTasks.at(i)<<endl;
+	}
 	
 }
 
@@ -92,6 +91,18 @@ void simEDFk::run(char* file)
 {
 	uploadTask(file);
 	computeCPUandK();
+	modifyPriority();
+	
+	
+	/*cout<<"after sort & prior ------------------------------"<<endl;
+	for(unsigned int i=0; i< _initialTasks.size(); ++i)
+	{
+		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString()<<endl;
+	}*/
+	
+	
+	Simulation s(_numberCPU, _initialTasks);
+	s.runGlobal();
 }
 
 int main(int argc, char** argv)

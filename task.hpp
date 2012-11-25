@@ -16,6 +16,7 @@ class Task
 public:
 	Task();
 	Task(int offset, int period, int deadline, int wcet);
+	Task(int offset, int period, int deadline, int wcet, bool priority);
 	Task(string parseString);
 	static deque<Task> generateFromString(string tasks_text);
 
@@ -34,6 +35,8 @@ public:
 	int getWcet();
 	void setUtilisation(float newUtilisation);
 	float getUtilisation();
+	void setPriority(bool newPriority);
+	bool getPriority();
 
 private:
 	int _offset;
@@ -41,6 +44,7 @@ private:
 	int _deadline;
 	int _wcet;
 	float _utilisation;
+	bool _priority;
 };
 
 ostream& operator << (ostream& s, Task t);

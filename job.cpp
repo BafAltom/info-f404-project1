@@ -44,6 +44,14 @@ int Job::getLastCPU_Id()
 {
 	return _lastCPU_id;
 }
+bool Job::getPriority()
+{
+	return _task.getPriority();
+}
+Task Job::getTask()
+{
+	return _task;
+}
 
 string Job::asString()
 {

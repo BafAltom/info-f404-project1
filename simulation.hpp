@@ -32,6 +32,7 @@ public:
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > getRunningJobs();
 	void cleanAndCheckJobs(int t);
 	bool result();
+	bool JobNeedToBePreempted();
 
 	string report();
 

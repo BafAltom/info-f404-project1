@@ -15,16 +15,42 @@ public:
 		{
 			return false;
 		}
-
-		int deadLineA = a->getAbsoluteDeadline();
-		int deadLineB = b->getAbsoluteDeadline();
-		if (smallestDeadlineIsMax)
+		if(a->getPriority())
 		{
-			return deadLineA < deadLineB;
+			//cout<<"a prior"<<endl;
+			if (smallestDeadlineIsMax) // running
+			{
+				return false;
+			}
+			else // ready
+			{
+				return true;
+			} 
+		}
+		else if(b->getPriority())
+		{
+			//cout<<"b prior"<<endl;
+			if (smallestDeadlineIsMax) // runn
+			{
+				return true;
+			}
+			else //ready
+			{
+				return false;
+			}
 		}
 		else
 		{
-			return deadLineA > deadLineB;
+			int deadLineA = a->getAbsoluteDeadline();
+			int deadLineB = b->getAbsoluteDeadline();
+			if (smallestDeadlineIsMax)
+			{
+				return deadLineA < deadLineB;
+			}
+			else
+			{
+				return deadLineA > deadLineB;
+			}
 		}
 	}
 };

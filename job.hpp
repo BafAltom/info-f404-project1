@@ -24,6 +24,8 @@ public:
 	int getComputationLeft();
 	int getStartTime();
 	int getLastCPU_Id();
+	bool getPriority();
+	Task getTask(); // a vire après ?????
 
 	string asString();
 

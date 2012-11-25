@@ -1,12 +1,15 @@
 #include "task.hpp"
 
-Task::Task() : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0)
+Task::Task() : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0), _priority(false)
 {	}
 
-Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet), _utilisation((float)wcet/period)
+Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet), _utilisation((float)wcet/period), _priority(false)
 {	}
 
-Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0)
+Task::Task(int offset, int period, int deadline, int wcet, bool priority) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet), _utilisation((float)wcet/period), _priority(priority)
+{	}
+
+Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0), _priority(false)
 {
 // This function does not check for correctness of input
 	istringstream ss(parseString);
@@ -25,6 +28,7 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0),
 	_deadline = atoi(parsedStrings[2].c_str());
 	_wcet = atoi(parsedStrings[3].c_str());
 	_utilisation = (float)_wcet / _period;
+
 }
 
 deque<Task> Task::generateFromString(string tasks_text)
@@ -55,7 +59,8 @@ string Task::asString(bool verbose)
 	  << getWcet();
 	if (verbose)
 	{
-		s << "\t" << getUtilisation();
+		cout << "\t" << getUtilisation()<< "\t"
+		<< getPriority();
 	}
 	return s.str();
 }
@@ -123,6 +128,16 @@ void Task::setUtilisation(float newUtilisation)
 float Task::getUtilisation()
 {
 	return _utilisation;
+}
+
+void Task::setPriority(bool newPriority)
+{
+	_priority = newPriority;
+}
+
+bool Task::getPriority()
+{
+	return _priority;
 }
 
 ostream& operator << (ostream& s, Task t)
