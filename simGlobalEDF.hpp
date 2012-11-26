@@ -20,6 +20,7 @@ public:
 	
 	simGlobalEDF();
 	void run(char* file);
+	vector<int> run(deque<Task> t);
 	
 
 private:

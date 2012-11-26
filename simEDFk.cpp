@@ -93,16 +93,28 @@ void simEDFk::run(char* file)
 	computeCPUandK();
 	modifyPriority();
 	
+	Simulation s(_numberCPU, _initialTasks);
+	vector<int> result = s.runGlobal();
 	
-	/*cout<<"after sort & prior ------------------------------"<<endl;
-	for(unsigned int i=0; i< _initialTasks.size(); ++i)
-	{
-		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString()<<endl;
-	}*/
-	
+	cout << "statistics of the simulation :"<<endl;
+	cout << "Number of preemption = " << result.at(0) << endl;
+	cout << "Number of migration = " << result.at(1) << endl;
+	cout << "idle time  = " << result.at(2) << endl;
+	cout << "Core used = " << _numberCPU << endl;
+}
+
+vector<int> simEDFk::run(deque<Task> t)
+{
+	_initialTasks = t;
+	computeCPUandK();
+	modifyPriority();
 	
 	Simulation s(_numberCPU, _initialTasks);
-	s.runGlobal();
+	vector<int> result = s.runGlobal();
+	
+	result.push_back(_numberCPU);
+	
+	return result;
 }
 
 int main(int argc, char** argv)

@@ -268,7 +268,10 @@ bool Simulation::JobNeedToBePreempted()
 // - active jobs must be organized in a min-deadline-heap
 // - CPUs must be organized in a max-deadline-of-its-job-heap
 // this will simplify the code a lot :)
-void Simulation::runGlobal()
+
+// ===> return un vecteur renvoyant dans l'ordre preemption_counter - migration_counter - idle_time_counter
+// et on gère l'affichage dans simEDFk et simGlobal, sinon on a plein de cout pendant la comparaison
+vector<int> Simulation::runGlobal()  
 {
 	long studyInterval = computeStudyInterval();
 
@@ -382,7 +385,14 @@ void Simulation::runGlobal()
 
 	}
 
-	cout << report() << endl;
+	//cout << report() << endl;
+	
+	vector<int> result;
+	result.push_back(preemption_counter);
+	result.push_back(migration_counter);
+	result.push_back(idle_time_counter);
+	
+	return result;
 }
 
 bool Simulation::result()
@@ -391,7 +401,7 @@ bool Simulation::result()
 	return false; 
 }
 
-string Simulation::report()
+/*string Simulation::report()
 {
 	std::ostringstream r;
 	r << "Number of preemption = " << preemption_counter << endl
@@ -401,7 +411,7 @@ string Simulation::report()
 
 	return r.str();
 
-}
+}*/
 
 template <class T>
 int findInDeque (T t, deque<T> aDeque)

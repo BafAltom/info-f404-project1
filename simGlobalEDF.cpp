@@ -33,7 +33,7 @@ void simGlobalEDF::uploadTask(char* file){
 
 void simGlobalEDF::computeCPU(){
 		// a faire
-		_numberCPU=3;
+		_numberCPU=2;
 	
 }
 
@@ -44,7 +44,28 @@ void simGlobalEDF::run(char* file){
 	computeCPU();
 	
 	Simulation s(_numberCPU, _tasks_generated);
-	s.runGlobal();
+	vector<int> result = s.runGlobal();
+	
+	cout << "statistics of the simulation :"<<endl;
+	cout << "Number of preemption = " << result.at(0) << endl;
+	cout << "Number of migration = " << result.at(1) << endl;
+	cout << "idle time  = " << result.at(2) << endl;
+	cout << "Core used = " << _numberCPU << endl;
+	
+}
+
+vector<int> simGlobalEDF::run(deque<Task> t)
+{
+	
+	_tasks_generated = t;
+	computeCPU();
+	
+	Simulation s(_numberCPU, _tasks_generated);
+	vector<int> result = s.runGlobal();
+	
+	result.push_back(_numberCPU);
+	
+	return result;
 	
 }
 

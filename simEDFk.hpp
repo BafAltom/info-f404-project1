@@ -19,6 +19,7 @@ public:
 	
 	simEDFk();
 	void run(char* file);
+	vector<int> run(deque<Task> t);
 	
 
 private:

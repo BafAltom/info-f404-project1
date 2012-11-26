@@ -28,7 +28,7 @@ public:
 	bool isInCPUs(Job* j);
 	int positionOfFirstIdleCPU();
 	int findInCPUs(Job* j);
-	void runGlobal();
+	vector<int> runGlobal();
 	void generateNewJobs(int studyInterval);
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > getReadyJobs();
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > getRunningJobs();
@@ -36,7 +36,7 @@ public:
 	bool result();
 	bool JobNeedToBePreempted();
 
-	string report();
+	//string report();
 
 	// everything is public
 	int _t;
