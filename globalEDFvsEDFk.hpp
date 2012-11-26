@@ -15,9 +15,7 @@ using namespace std;
 #include "task.hpp"
 #include "simEDFk.hpp"
 #include "simGlobalEDF.hpp"
-#include "taskGenerator.hpp"
-
-
+#include "taskGeneratorClass.hpp"
 
 class GlobalEDFvsEDFk {
 	

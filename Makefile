@@ -13,7 +13,7 @@ simGlobalEDF: simGlobalEDF.o task.o simulation.o job.o EDFComp.o
 simEDFk: simEDFk.o task.o simulation.o job.o EDFComp.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
-taskGenerator: taskGenerator.o task.o EDFComp.o
+taskGenerator: taskGenerator.o task.o EDFComp.o taskGeneratorClass.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 		
 globalEDFvsEDFk: globalEDFvsEDFk.o 

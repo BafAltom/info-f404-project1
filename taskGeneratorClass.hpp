@@ -31,11 +31,4 @@ private:
 
 };
 
-int taskGenerator::MAX_OFFSET = 20;
-// values generated with http://www.dcode.fr/ppcm-plus-petit-commun-multiple
-int taskGenerator::ACCEPTED_PERIODS[19] =
-	{2, 3, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 28, 30, 32};
-int taskGenerator::ACCEPTED_PERIODS_size = 19;
 #endif
-
-
