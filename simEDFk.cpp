@@ -5,7 +5,7 @@ bool taskSortCriteria (Task t1,Task t2) { return (t1.getUtilisation() > t2.getUt
 
 simEDFk::simEDFk() :
 	_k(0),
-	_numberCPU(1000),
+	_numberCPU(0),
 	_initialTasks(deque<Task>())
 {	}
 
@@ -28,10 +28,10 @@ void simEDFk::uploadTask(char* file){
 	_initialTasks = Task::generateFromString(tasks_text);
 	
 
-	cout << "generated " << _initialTasks.size() << " tasks." << endl;
-	/*for(unsigned int i=0; i< _initialTasks.size(); ++i)
+	/*cout << "generated " << _initialTasks.size() << " tasks." << endl;
+	for(unsigned int i=0; i< _initialTasks.size(); ++i)
 	{
-		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString()<<endl;
+		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString(true)<<endl;
 	}*/
 	
 	
@@ -42,9 +42,14 @@ void simEDFk::computeCPUandK(){
 	//trie les taches par utilisation
 	sort(_initialTasks.begin(),_initialTasks.end(), taskSortCriteria);
 	
-	
+	cout << "generated " << _initialTasks.size() << " tasks." << endl;
+	for(unsigned int i=0; i< _initialTasks.size(); ++i)
+	{
+		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString(true)<<endl;
+	}
 
 	std::vector<int> testNumberCPU;
+	
 	
 	// On calcule les min CPU
 	//cout<<"------------------------------------------------------"<<endl;
@@ -52,24 +57,63 @@ void simEDFk::computeCPUandK(){
 	{
 		//cout<<"k = "<<k<<endl;
 		float Utot = 0;
+		int minCPU = 0;
 		for(unsigned int i=k; i < _initialTasks.size(); ++i)
 		{
 			Utot += _initialTasks.at(i).getUtilisation() ;
-			//cout<<"_initialTasks.at(i).getUtilisation() = "<<_initialTasks.at(i).getUtilisation()<<endl;
+			//cout<<"_initialTasks.at("<<i<<").getUtilisation() = "<<_initialTasks.at(i).getUtilisation()<<endl;
 		}
 		//cout<<"Utot = "<<Utot<<endl;
-		int minCPU = (k-1) + ceil(Utot/(1-_initialTasks.at(k-1).getUtilisation()));
-		//cout<<"minCPU = "<<minCPU<<endl;
+		if(_initialTasks.at(k-1).getUtilisation()!=1)
+		{
+			//cout<<"util != 1"<<endl;
+
+			minCPU = (k-1) + ceil(Utot/(1-_initialTasks.at(k-1).getUtilisation()));
+			/*cout<<"minCPU = "<<minCPU<<endl;
+			cout<<"_initialTasks.at("<<k-1<<").getUtilisation() "<<_initialTasks.at(k-1).getUtilisation()<<endl;
+			cout<<"(1-_initialTasks.at("<<k-1<<").getUtilisation()) "<<(1-_initialTasks.at(k-1).getUtilisation())<<endl;
+			cout<<"Utot/(1-_initialTasks.at("<<k-1<<").getUtilisation()) "<<Utot/(1-_initialTasks.at(k-1).getUtilisation())<<endl;
+			cout<<"ceil(Utot/(1-_initialTasks.at("<<k-1<<").getUtilisation())) "<<ceil(Utot/(1-_initialTasks.at(k-1).getUtilisation()))<<endl;*/
+		}
+		
 		testNumberCPU.push_back(minCPU);
 		//cout<<"------------------------------------------------------"<<endl;
 	}
-	
-	for(unsigned int i = 0; i< testNumberCPU.size(); ++i)
+	cout<<"testNumberCPU :"<<endl;
+	for(unsigned int mo = 0; mo < testNumberCPU.size(); ++mo)
 	{
-		if(testNumberCPU.at(i) < _numberCPU)
+		cout<<"k ="<<mo+1<<" pour "<<testNumberCPU.at(mo)<<" CPU"<<endl;
+	}
+	
+	unsigned int cnt=0;
+	while(_numberCPU==0 && cnt < testNumberCPU.size())
+	{
+		if(testNumberCPU.at(cnt) != 0)
 		{
-			_numberCPU = testNumberCPU.at(i);
-			_k = i+1;
+			_numberCPU = testNumberCPU.at(cnt);
+			_k = cnt+1;
+			//cout<<"init _numberCPU a "<<_numberCPU<<endl;
+		}
+		cnt ++;
+	}
+	
+	if(_numberCPU==0)
+	{
+		// toutes les taches ont une utilisation de 1, elle ont donc besoins chacune d'un proco.
+		_numberCPU = _initialTasks.size();
+		// k est initilaisé à 0 => ok
+	}
+	else
+	{
+		for(unsigned int i = 0; i< testNumberCPU.size(); ++i)
+		{
+			if(testNumberCPU.at(i) < _numberCPU && testNumberCPU.at(i) != 0)
+			{
+				_numberCPU = testNumberCPU.at(i);
+				_k = i+1;
+				//cout<<"testNumberCPU.at(i) "<<testNumberCPU.at(i)<<endl;
+				//cout<<"_k "<<i+1<<endl;
+			}
 		}
 	}
 	cout<<"_numberCPU min ="<<_numberCPU<<endl;
@@ -121,9 +165,6 @@ int main(int argc, char** argv)
 {
 	simEDFk edfk;
 	edfk.run(argv[1]);
-
-	//Simulation s(3, tasks_generated);
-	//s.runGlobal();
 
 	return 0;
 }
