@@ -98,7 +98,7 @@ int Task::getOffset()
 void Task::setPeriod(int newPeriod)
 {
 	if (newPeriod <= 0) throw std::logic_error("setPeriod : period must be > 0");
-	//if (newPeriod < getWcet()) throw std::logic_error("setPeriod : period must be >= wcet");
+
 	_period = newPeriod;
 }
 
@@ -110,7 +110,7 @@ int Task::getPeriod()
 void Task::setDeadline(int newDeadline)
 {
 	if (newDeadline <= 0) throw std::logic_error("setDeadline : deadline must be > 0");
-	//if (newDeadline < getWcet()) throw std::logic_error("setDeadline : deadline must be >= wcet");
+
 	_deadline = newDeadline;
 }
 
@@ -137,6 +137,7 @@ void Task::reComputeUtilisation()
 void Task::setUtilisation(float newUtilisation)
 {
 	if (newUtilisation <= 0) throw std::logic_error("newUtilisation : utilisation must be > 0");
+	
 	_utilisation = newUtilisation;
 }
 

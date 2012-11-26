@@ -38,8 +38,6 @@ public:
 	bool result();
 	bool JobNeedToBePreempted();
 
-	//string report();
-
 	// everything is public
 	int _t;
 	int _deltaT;

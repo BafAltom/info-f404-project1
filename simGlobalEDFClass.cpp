@@ -27,11 +27,6 @@ void simGlobalEDF::uploadTask(char* file){
 		
 	}
 	_tasks_generated = Task::generateFromString(tasks_text);
-
-	cout << "generated " << _tasks_generated.size() << " tasks." << endl;
-	for (unsigned int i = 0; i < _tasks_generated.size(); ++i)
-		cout << _tasks_generated[i].asString(true) << endl;
-	
 }
 
 /**
@@ -43,8 +38,6 @@ void simGlobalEDF::computeCPU(){
 		{
 			globalUtilizationPerc += _tasks_generated.at(i).getUtilizationPercent();
 		}
-
-		cout << "computeCPUS : " << globalUtilizationPerc << endl;
 		_numberCPU = ceil(globalUtilizationPerc/100.0);
 }
 

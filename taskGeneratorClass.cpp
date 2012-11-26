@@ -41,9 +41,9 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		tasks[i] = Task(offset, period, deadline, wcet);
 	}
 
-	cout << "Initial generation :" << endl;
+	/*cout << "Initial generation :" << endl;
 	for (unsigned int t = 0; t < tasks.size(); ++t)
-		cout << tasks[t].asString() << endl;
+		cout << tasks[t].asString() << endl;*/
 
 
 	// modify all tasks to get closer to the utilization parameter
@@ -62,10 +62,10 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 			tasks[i].setPeriod(tasks[i].getWcet());
 	}
 
-	cout << "--------------------- after rescaling" << endl;
+	//cout << "--------------------- after rescaling" << endl;
 
-	for (unsigned int t = 0; t < tasks.size(); ++t)
-		cout << tasks[t].asString() << "\t" << tasks[t].getUtilizationPercent() << endl;
+	/*for (unsigned int t = 0; t < tasks.size(); ++t)
+		cout << tasks[t].asString() << "\t" << tasks[t].getUtilizationPercent() << endl;*/
 
 	// Try to get closer and closer to the desired utilization by small modifications
 	current_utiliz = systemUtilization(tasks);
@@ -85,7 +85,7 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		}
 		if (stuck)
 		{
-			cout << "Dead end. Try again." << endl;
+			//cout << "Dead end. Try again." << endl;
 			return (vector<Task>());
 		}
 
@@ -101,10 +101,10 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		current_utiliz = systemUtilization(tasks);
 		++loop_counter;
 
-		cout << "--------------------- step " << loop_counter << endl;
+		/*cout << "--------------------- step " << loop_counter << endl;
 		for (unsigned int t = 0; t < tasks.size(); ++t)
 			cout << tasks[t].asString() << "\tu: " << tasks[t].getUtilizationPercent() << endl;
-		cout << "Global Utilization : " << systemUtilization(tasks) << endl;
+		cout << "Global Utilization : " << systemUtilization(tasks) << endl;*/
 	}
 
 	// explicit deadline
@@ -116,10 +116,10 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 
 	int delta = abs(utPerc - systemUtilization(tasks));
 
-	cout << "best utilization I could do : " << systemUtilization(tasks);
+	/*cout << "best utilization I could do : " << systemUtilization(tasks);
 	if (delta > 0)
 		cout << " (and not " << utPerc << ")";
 	cout << endl;
-	cout << "delta : " << delta << "\tprecision : " << precision << "\tloops : "<< loop_counter << endl;
+	cout << "delta : " << delta << "\tprecision : " << precision << "\tloops : "<< loop_counter << endl;*/
 	return tasks;
 }

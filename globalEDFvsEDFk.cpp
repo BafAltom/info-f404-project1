@@ -81,7 +81,7 @@ void GlobalEDFvsEDFk::makeStats()
 		for(int i=0; i <4 ; ++i)
 		{
 			int cnt = 0;
-			int systSchedulable = 0;
+			float systSchedulable = 0;
 			vector<float> statGlobalAverage = vector<float>(4);
 			vector<float> statEDFkAverage = vector<float>(4);
 			while(cnt < 50)
@@ -113,7 +113,7 @@ void GlobalEDFvsEDFk::makeStats()
 			// we compute the average statistics
 			for(unsigned int i = 0; i< statGlobalAverage.size(); ++i)
 			{
-				if(systSchedulable != 0)
+				if(systSchedulable > 0.0)
 				{
 					statEDFkAverage.at(i)=statEDFkAverage.at(i)/systSchedulable;
 					statGlobalAverage.at(i)=statGlobalAverage.at(i)/systSchedulable;

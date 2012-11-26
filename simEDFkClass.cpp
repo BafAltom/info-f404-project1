@@ -106,7 +106,6 @@ void simEDFk::modifyPriority(){
 	for(int i=0; i<_k; ++i)
 	{
 		_initialTasks.at(i).setPriority(true);
-		cout<<"met prior :" <<_initialTasks.at(i)<<endl;
 	}
 	
 }
