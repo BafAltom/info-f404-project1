@@ -1,7 +1,5 @@
 #include "taskGenerator.hpp"
 
-
-
 int taskGenerator::systemUtilization(vector<Task> tasks)
 {
 	int current_utiliz = 0;
@@ -20,8 +18,9 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 	vector<Task> tasks = vector<Task>(numT);
 	for (int i = 0; i < numT; ++i)
 	{
-		int offset = (int) (rand() % MAX_OFFSET);
-		int period = (int) ((rand() % (MAX_PERIOD - MIN_PERIOD)) + MIN_PERIOD);
+		int offset = (int) (rand() % taskGenerator::MAX_OFFSET);
+		int period_pos = (int) (rand() % taskGenerator::ACCEPTED_PERIODS_size);
+		int period = taskGenerator::ACCEPTED_PERIODS[period_pos];
 		int deadline = period;
 		int wcet = (deadline == 1) ? 1 : (int) ((rand() % (deadline - 1)) + 1);
 
@@ -43,7 +42,7 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 	for (unsigned int i = 0; i < tasks.size(); ++i)
 	{
 		// modify wcet or period? --> random choice
-		if (rand()%2 == 0)
+		if (/*rand()%2*/0 == 0)
 		{
 			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
 			tasks[i].setWcet(max(newWcet, 1));
@@ -77,13 +76,13 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		Task* rndTask = &tasks[rndTaskP];
 
 		// which small modification do we make? --> random choice
-		int rollOfDice = rand() % 2;
+		int rollOfDice = /*rand() % 2*/0;
 
 		// Can we do this modification on this task?
 		if (mustDecreaseUtil)
 		{
 			if (rndTask->getWcet() == 1)
-				rollOfDice = 1;
+				continue; //rollOfDice = 1;
 		}
 		else
 		{
@@ -139,7 +138,7 @@ int main(int argc, char** argv)
 	int utilizationPercent = 100;
 	int numberOfTasks = 10;
 	string outputName = "output_default";
-	int precision = 0;
+	int precision = 5;
 	
 	if (argc % 2 == 0) throw logic_error("Bad number of parameters (was odd, need even)");
 

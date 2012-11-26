@@ -1,6 +1,8 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+#define DEBUG true
+
 #include <algorithm>
 #include <assert.h>
 #include <deque>

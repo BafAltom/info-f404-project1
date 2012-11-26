@@ -13,21 +13,15 @@ using namespace std;
 
 #include "task.hpp"
 
-// GENERATORS CONSTANTS
-
-int MAX_OFFSET = 20;
-int MAX_PERIOD = 20;
-int MIN_PERIOD = 2;
-// useless (implicit deadline)
-int MIN_DEADLINE = 1;
-int MAX_DEADLINE = 20;
-
-
-
 class taskGenerator {
 	
 public:
-	
+	// GENERATORS CONSTANTS
+
+	static int MAX_OFFSET;
+	static int ACCEPTED_PERIODS[19];
+	static int ACCEPTED_PERIODS_size;
+
 	taskGenerator(){};
 	vector<Task> generateTasks(int utPerc, int numT, int precision);
 	
@@ -37,6 +31,11 @@ private:
 
 };
 
+int taskGenerator::MAX_OFFSET = 20;
+// values generated with http://www.dcode.fr/ppcm-plus-petit-commun-multiple
+int taskGenerator::ACCEPTED_PERIODS[19] =
+	{2, 3, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 28, 30, 32};
+int taskGenerator::ACCEPTED_PERIODS_size = 19;
 #endif
 
 

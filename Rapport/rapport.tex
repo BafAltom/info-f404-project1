@@ -4,6 +4,7 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{verbatim}
 \definecolor{grey}{rgb}{0.9,0.9,0.9}
 
 \lstset{
@@ -14,7 +15,7 @@ numbers=left,
 numberstyle=\tiny,
 numbersep=5pt,
 showstringspaces=false,
-tabsize=3,
+tabsize=2,
 breaklines=true
 }
 
@@ -48,16 +49,96 @@ La génération du système de $n$ tâches avec une utilisation $U_{globale}$ se
 
 Premièrement, on génère les $n$ tâches avec des paramètres aléatoires (distribution uniforme entre deux bornes pour chaque paramètre). Le WCET est bien entendu borné par la valeur de l'échéance.\\
 
-Ensuite, on calcule le facteur d'erreur $F_u = \frac{\Sigma U_i}{U_{globale}}$ et on l'applique à toutes les tâches soit en multipliant le WCET soit en divisant la période (
+Ensuite, on calcule le facteur d'erreur $F_u = \frac{\Sigma U_i}{U_{globale}}$ et on l'applique à toutes les tâches soit en multipliant le WCET soit en divisant la période (une chance sur deux pour chaque tâche).\\
+
+Ceci ne nous donne pas encore l'utilisation demandée pour deux raisons : premièrement, le système étant à temps discret, les résultats des opérations sont toujours arrondies à l'entier le plus proche ce qui crée des imprécisions. Ensuite, le facteur d'erreur est limité par les contraintes logiques des tâches ($wcet \ge 1$, $wcet \le deadline$, etc).\\
+
+On effectue donc une troisième étape dans laquelle on va, jusqu'à obtenir une utilisation acceptable, sélectionner une tâche au hasard et faire varier son wcet ou sa période de 1 pour faire augmenter ou diminuer son utilisation (en fonction de ce qui est nécessaire).\\
+
+Ce système nous semble générer des systèmes assez variés en un temps raisonnable.
 
 \subsection{Structures de données}
+Il a été choisi d'utiliser la structure $deque$\footnote{\url{http://www.cplusplus.com/reference/deque/deque/}} de la STL pour le stockage des tâches (\verb?tasks?), des travaux actifs, donc entrés dans le système et dont la deadline n'est pas dépassée (\verb?jobs?) et pour les différents coeurs (\verb?CPUs?, qui contient des pointeurs vers des éléments de \verb?jobs?).\\
+
+Les travaux actifs sont également référencés par deux files à priorité de pointeurs vers des travaux : la file \verb?Running?, contenant les travaux en cours de calcul par un des coeurs (dont l'élément le plus prioritaire est le travail avec la plus $faible$ priorité), et la file \verb?Ready?, contenant tous les autres travaux actifs (dont l'élément le plus prioritaire est le travail avec la plus $grande$ priorité).\\
+
+On notera qu'il existe deux structures de pointeurs vers les travaux en cours de calcul : la file \verb?Running? et la deque \verb?CPUs?. Ceci est dû au fait qu'une file à priorité ne permet pas facilement d'accéder à l'entierté des éléments ou de différencier les différents coeurs (pour le compteur de migration).
 
 \subsection{Boucle principale}
+Voici une version simplifiée de notre boucle principale :
+\fontfamily{pcr}
+\begin{lstlisting}
+while (_t < studyInterval) {
+	generateNewJobs(_t);
+	// scheduling : assign which jobs goes to which CPUs
+	while (not _readyJobs.empty()
+		and (availableCPUs or JobNeedToBePreempted() )) {
+		// The earliest-deadline active job should get a CPU
+		if (availableCPUs)
+		{
+			Job* newJob = _readyJobs.pop();
+			_CPUs[firstIdleCPU] = newJob;
+			_runningJobs.push(newJob);
+		}
+		else // all CPUs are busy, preempt the one with the latest deadline
+		{
+			Job* oldJob = _runningJobs.pop();
+			Job* newJob = _readyJobs.pop();
+			_CPUs[posOldJob] = newJob;
+			_readyJobs.push(oldJob);
+			_runningJobs.push(newJob);
+			preemption_counter++;
+		}
+	}
+
+	// CPUs
+	for (unsigned int i = 0; i < _CPUs.size(); ++i)
+	{
+		if (_CPUs[i] != NULL)
+		{
+			// compute jobs in CPUs
+			if (_CPUs[i]->getLastCPU_Id() != (int) i)
+				++migration_counter;
+			_CPUs[i]->giveCPU(_deltaT, i);
+
+			// check if a job is done
+			if (_CPUs[i]->getComputationLeft() == 0)
+				_CPUs[i] = NULL;
+		else
+			++idle_time_counter;
+		}
+	}
+
+	// advance time
+	_t += _deltaT;
+	cleanAndCheckJobs(_t);
+}
+\end{lstlisting}
+\fontfamily{}
+
+\subsection{Récoltes de statistiques}
+
+Nous avons récoltés les données suivantes :
+
+\begin{description}
+ \item[Préemption :] Un coeur change de travail alors que le précédent n'était pas terminé.
+ \item[Migration :] Un travail reprend son exécution sur un coeur différent du précédent.
+ \item[Instant oisif :] Un coeur n'a pas de travail pour cet instant. Si plusieurs coeurs sont oisifs on augmente le compte de ce nombre de coeurs.
+ \item[Nombres de coeurs :] Le nombre de coeurs que le simulateur a prévu pour le système, même si certains n'ont jamais été utilisés.
+\end{description}
 
 \section{Difficultés rencontrées}
 \subsection{Intervalle d'étude}
 
+Les périodes des tâches sont générées aléatoirement. Hors, elles vont avoir une très grande influence sur l'intervalle d'étude du simulateur vu que celui-ci est égal à $PPCM(T_i)+ max(O_i)$. Des périodes tirées aléatoirement peuvent très vite rendre le PPCM relativement grand, jusqu'au point où le temps de calcul devient inacceptable.
+
+Ce problème a été réglé en donnant 19 valeurs de période possibles (dont le PPCM est connu et acceptable) et en choisissant pour chaque tâche une de ses valeurs.\\
+
+Les valeurs choisies sont : {2, 3, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 28, 30, 32}, leur PPCM est 554400.
+
 \subsection{Priorité en EDF-k}
+
+?? ça je te laisse Pierre 
 
 \section{Résultats}
 \end{document}          

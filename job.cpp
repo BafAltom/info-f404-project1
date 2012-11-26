@@ -58,13 +58,14 @@ string Job::asString()
 {
 	std::ostringstream s;
 	s << getStartTime() << "\t"
-	  << getComputationLeft() << "\t";
+	  << getComputationLeft() << "\t"
+	  /*<< "task: " << _task->asString()*/;
 	return s.str();
 }
 
 bool Job::operator==(const Job &other)
 {
-	return _task == other._task and _startTime == other._startTime;
+	return (_task == other._task and _startTime == other._startTime);
 }
 
 ostream& operator << (ostream& s, Job j)
