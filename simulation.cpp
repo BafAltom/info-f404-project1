@@ -31,9 +31,12 @@ Simulation::Simulation(int nCPU, deque<Task> t) :
 Simulation::~Simulation()
 {	}
 
+
+/**
+* \details	Generate the new jobs that appears at the time t
+*/
 void Simulation::generateNewJobs(int t)
 {
-	// generate new jobs
 	for (unsigned int i = 0; i < _tasks.size(); ++i)
 	{
 		Task* task = &_tasks[i];
@@ -44,9 +47,12 @@ void Simulation::generateNewJobs(int t)
 	}
 }
 
+/**
+* \details	Remove all jobs whose deadline is in the past and check that they were completed successfully.
+* \return 	true if all jobs whose deadline is in the past are completed successfully, false otherwise.
+*/
 bool Simulation::cleanAndCheckJobs(int t)
 {
-	// remove all jobs whose deadline is in the past (and check that they were completed successfully)
 	if (_jobs.empty()) return true;
 
 	// save CPUs
@@ -65,7 +71,7 @@ bool Simulation::cleanAndCheckJobs(int t)
 		{
 			if (it->getComputationLeft() != 0)
 			{
-				cout << "FAILURE! at t = " << t << " and job : " << (*it) << endl;
+				//cout << "FAILURE! at t = " << t << " and job : " << (*it) << endl;
 				//exit(EXIT_FAILURE);
 				return false;
 			}
@@ -92,6 +98,10 @@ bool Simulation::cleanAndCheckJobs(int t)
 	return true;
 }
 
+/**
+* \details	Compute the lowest common multiple
+* \return 	The lowest common multiple
+*/
 long ppcm(long A, long B)
 {
 	if (A == 1) return B;
@@ -140,9 +150,12 @@ long ppcm(long A, long B)
 	return current_ppcm;
 }
 
+/**
+* \details	Compute the study interval
+* \return 	The study interval
+*/
 long Simulation::computeStudyInterval()
 {
-	// TODO : should return 2*LCM(periods) + max offset
 	long current_ppcm = 1;
 	for (deque<Task>::iterator it = _tasks.begin(); it != _tasks.end(); ++it)
 	{
@@ -152,6 +165,10 @@ long Simulation::computeStudyInterval()
 	return (2*current_ppcm + maxOffsetOf(_tasks));
 }
 
+/**
+* \details	Compute the largest offset from a deque of tasks
+* \return 	this offset
+*/
 int Simulation::maxOffsetOf(std::deque<Task> tasks)
 {
 	int maxOffset = 0;
@@ -162,8 +179,11 @@ int Simulation::maxOffsetOf(std::deque<Task> tasks)
 	return maxOffset;
 }
 
+/**
+* \details	Compute the jobs that are actives but not running on the CPU
+* \return 	priority_queue of thoses jobs (sort by deadline)
+*/
 priority_queue<Job*, std::vector<Job*>, EDFComp<false> > Simulation::getReadyJobs()
-// !! does not return Running jobs
 {
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > readyJobs;
 	int currentTime = _t;
@@ -202,6 +222,10 @@ priority_queue<Job*, std::vector<Job*>, EDFComp<false> > Simulation::getReadyJob
 	return readyJobs;
 }
 
+/**
+* \details	Compute the jobs that are running on the CPU
+* \return 	priority_queue of thoses jobs (sort by deadline)
+*/
 priority_queue<Job*, std::vector<Job*>, EDFComp<true> > Simulation::getRunningJobs()
 {
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > runningJobs;
@@ -215,23 +239,37 @@ priority_queue<Job*, std::vector<Job*>, EDFComp<true> > Simulation::getRunningJo
 	return runningJobs;
 }
 
+/**
+* \details	Check if a job is running on a CPU
+* \return 	true if this job is running on a CPU, false otherwise
+*/
 bool Simulation::isInCPUs(Job* j)
 {
 	return (findInDeque<Job*>(j, _CPUs) != -1);
 }
 
+/**
+* \details	Compute the position of the first idle CPU
+* \return 	This position or -1 if all CPUs are busy
+*/
 int Simulation::positionOfFirstIdleCPU()
-// return -1 if all CPUs are busy
 {
 	return findInDeque<Job*>(NULL, _CPUs);
 }
 
+/**
+* \details	Compute the position of the CPU where the job j is running
+* \return 	This position or -1 if j is not in CPUs
+*/
 int Simulation::findInCPUs(Job* j)
-// return -1 if j is not in CPUs
 {
 	return findInDeque<Job*> (j, _CPUs);
 }
 
+/**
+* \details	Check if a ready job need to be preempted with a job running on a CPU
+* \return 	True if a ready job need to be preempted, false otherwise
+*/
 bool Simulation::JobNeedToBePreempted()
 {
 	if(_readyJobs.top()->getPriority() and not _runningJobs.top()->getPriority())
@@ -253,13 +291,14 @@ bool Simulation::JobNeedToBePreempted()
 	}
 }
 
-// TODO:
-// - active jobs must be organized in a min-deadline-heap
-// - CPUs must be organized in a max-deadline-of-its-job-heap
-// this will simplify the code a lot :)
 
-// ===> return un vecteur renvoyant dans l'ordre preemption_counter - migration_counter - idle_time_counter
-// et on gère l'affichage dans simEDFk et simGlobal, sinon on a plein de cout pendant la comparaison
+/**
+* \details	Run global EDF (adapted to "pure" global EDF and to EDF-k).
+* \return 	A vector containing the statistics of the system
+* 				vector[0]= average number of preemption
+* 				vector[1]= average number of migration
+*				vector[2]= average idle time
+*/
 vector<int> Simulation::runGlobal()  
 {
 	long studyInterval = computeStudyInterval();
@@ -376,7 +415,6 @@ vector<int> Simulation::runGlobal()
 
 	}
 
-	//cout << report() << endl;
 	vector<int> result;
 	if(isSchedulable)
 	{	
@@ -387,23 +425,13 @@ vector<int> Simulation::runGlobal()
 	return result;
 }
 
+
 bool Simulation::result()
 // TODO : return true if schedulable, false if not, and throw an exception if run() has not yet been called
 {
 	return false; 
 }
 
-/*string Simulation::report()
-{
-	std::ostringstream r;
-	r << "Number of preemption = " << preemption_counter << endl
-	 << "Number of migration = " << migration_counter << endl
-	 << "Core used = " << _CPUs.size() << endl
-	 << "idle time  = " << idle_time_counter << endl;
-
-	return r.str();
-
-}*/
 
 template <class T>
 int findInDeque (T t, deque<T> aDeque)

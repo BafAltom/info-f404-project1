@@ -17,24 +17,22 @@ public:
 		}
 		if(a->getPriority() && not b->getPriority())
 		{
-			//cout<<"a prior"<<endl;
-			if (smallestDeadlineIsMax) // running
+			if (smallestDeadlineIsMax)
 			{
 				return false;
 			}
-			else // ready
+			else
 			{
 				return true;
 			} 
 		}
 		else if(b->getPriority() && not a->getPriority())
 		{
-			//cout<<"b prior"<<endl;
-			if (smallestDeadlineIsMax) // runn
+			if (smallestDeadlineIsMax)
 			{
 				return true;
 			}
-			else //ready
+			else
 			{
 				return false;
 			}

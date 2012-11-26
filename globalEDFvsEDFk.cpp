@@ -3,7 +3,9 @@
 GlobalEDFvsEDFk::GlobalEDFvsEDFk(){	}
 
 
-
+/**
+* \details	Make and display a comparaison between EDF-k and global EDF for those parameters
+*/
 void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 {
 	vector<int> statGlobalTot = vector<int>(4);
@@ -17,11 +19,12 @@ void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 	int cnt=0;
 	while(cnt <= numTesting)
 	{
-		// On génère les taches
+		// we generate the tasks
 		vector<Task> tasks = task_generator.generateTasks(utilisation, numTasks, 20);
 		deque<Task> t;
 		std::copy(tasks.begin(),tasks.end(),std::back_inserter(t));
-
+		
+		// we run the system and store the statistics
 		if(tasks.size()>0)
 		{
 			vector<int> statGlobal = sim_global.run(t);
@@ -31,12 +34,10 @@ void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 				for(unsigned int j=0; j<statGlobal.size(); ++j)
 				{
 					statGlobalTot.at(j)=statGlobalTot.at(j)+statGlobal.at(j);
-					cout<<"statGlobal.at("<<j<<") :"<<statGlobal.at(j)<<endl;
 				}	
 				for(unsigned int j=0; j<statEDFk.size(); ++j)
 				{
 					statEDFkTot.at(j)=statEDFkTot.at(j)+statEDFk.at(j);
-					cout<<"statEDF.at("<<j<<") :"<<statEDFk.at(j)<<endl;
 				}
 				cnt ++;
 			}
@@ -52,6 +53,9 @@ void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 	
 }
 
+/**
+* \details	Make and display comparaisons between EDF-k and global EDF for a utilisation from 30 to 160 and a number of task from 5 to 20
+*/
 void GlobalEDFvsEDFk::makeStats()
 {
 	srand(time(NULL));
@@ -82,11 +86,12 @@ void GlobalEDFvsEDFk::makeStats()
 			vector<float> statEDFkAverage = vector<float>(4);
 			while(cnt < 50)
 			{
-				// On génère les taches
+				// we generate the tasks
 				vector<Task> tasks = task_generator.generateTasks(utilisation, NumberOftask, 20);
 				deque<Task> t;
 				std::copy(tasks.begin(),tasks.end(),std::back_inserter(t));
-
+				
+				// we run the system and store the statistics
 				if(tasks.size()>0)
 				{
 					vector<int> statGlobal = sim_global.run(t);
@@ -104,6 +109,8 @@ void GlobalEDFvsEDFk::makeStats()
 				}
 				cnt ++;
 			}
+			
+			// we compute the average statistics
 			for(unsigned int i = 0; i< statGlobalAverage.size(); ++i)
 			{
 				if(systSchedulable != 0)
@@ -134,8 +141,13 @@ void GlobalEDFvsEDFk::makeStats()
 	}
 }
 
-// prend en argument : le nombre de tâches, l'utilisation et le nombre d'essais à faire.
-// Exemple : ./globalEDFvsEDFk -u 120 -n 8 -t 100
+
+/**
+* \details	Run globalEDFvsEDFk
+* 				can be launched with :
+* 					./globalEDFvsEDFk -u 120 -n 8 -t 100 (create the statistics for 8 tasks with an utilization of 100)
+* 					./globalEDFvsEDFk (create statistics for a utilisation from 30 to 160 and a number of task from 5 to 20)
+*/
 int main(int argc, char** argv)
 {
 	
@@ -152,7 +164,6 @@ int main(int argc, char** argv)
 	{
 		if (argc % 2 == 0) throw "Bad number of parameters (was odd, need even)";
 
-		// parse arguments
 		for (int i = 1; i < argc; i += 2)
 		{
 			string command = argv[i];

@@ -7,6 +7,9 @@ simGlobalEDF::simGlobalEDF() :
 	_tasks_generated(deque<Task>())
 {	}
 
+/**
+* \details	Upload a set of tasks from a file
+*/
 void simGlobalEDF::uploadTask(char* file){
 	
 	ifstream taskFile(file);
@@ -31,6 +34,9 @@ void simGlobalEDF::uploadTask(char* file){
 	
 }
 
+/**
+* \details	Compute the number of CPU needed by global EDF
+*/
 void simGlobalEDF::computeCPU(){
 		int globalUtilizationPerc = 0;
 		for (unsigned int i = 0; i < _tasks_generated.size(); ++i)
@@ -42,7 +48,9 @@ void simGlobalEDF::computeCPU(){
 		_numberCPU = ceil(globalUtilizationPerc/100.0);
 }
 
-
+/**
+* \details	Run global EDF from a file and display the result on the terminal
+*/
 void simGlobalEDF::run(char* file){
 	
 	uploadTask(file);
@@ -66,6 +74,14 @@ void simGlobalEDF::run(char* file){
 	
 }
 
+/**
+* \details	Run global EDF from a deque of tasks and return the result.
+* \return 	A vector containing the statistics of the system
+* 				vector[0]= average number of preemption
+* 				vector[1]= average number of migration
+*				vector[2]= average idle time
+*				vector[3]= average number of core
+*/
 vector<int> simGlobalEDF::run(deque<Task> t)
 {
 	

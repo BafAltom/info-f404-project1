@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 	int utilizationPercent = 100;
 	int numberOfTasks = 10;
 	string outputName = "output_default";
-	int precision = 0;
+	int precision = 20;
 	
 	if (argc % 2 == 0) throw logic_error("Bad number of parameters (was odd, need even)");
 

@@ -19,11 +19,19 @@ Job::Job(Task* task, int currentTime) :
 	}
 }
 
+
+/**
+* \details	The job "run" on a CPU, so we decrease the computation left and store the "current" CPU of this job
+*/
 void Job::giveCPU(int duration, int CPU_id)
 {
 	_computationLeft -= duration;
 	_lastCPU_id = CPU_id;
 }
+
+/****************************************
+*	GETTERS/SETTERS
+****************************************/
 
 int Job::getAbsoluteDeadline()
 {
@@ -58,8 +66,7 @@ string Job::asString()
 {
 	std::ostringstream s;
 	s << getStartTime() << "\t"
-	  << getComputationLeft() << "\t"
-	  /*<< "task: " << _task->asString()*/;
+	  << getComputationLeft() << "\t";
 	return s.str();
 }
 

@@ -9,7 +9,9 @@ simEDFk::simEDFk() :
 	_initialTasks(deque<Task>())
 {	}
 
-
+/**
+* \details	Upload a set of tasks from a file
+*/
 void simEDFk::uploadTask(char* file){
 	
 	ifstream taskFile(file);
@@ -25,66 +27,40 @@ void simEDFk::uploadTask(char* file){
 		}
 		tasks_text += "\n";
 	}
-	_initialTasks = Task::generateFromString(tasks_text);
-	
-
-	/*cout << "generated " << _initialTasks.size() << " tasks." << endl;
-	for(unsigned int i=0; i< _initialTasks.size(); ++i)
-	{
-		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString(true)<<endl;
-	}*/
-	
+	_initialTasks = Task::generateFromString(tasks_text);	
 	
 }
 
-
+/**
+* \details	Compute the number of CPU and the k, needed by EDF-k
+*/
 void simEDFk::computeCPUandK(){
-	//trie les taches par utilisation
+	
+	//sort tasks by utilisation
 	sort(_initialTasks.begin(),_initialTasks.end(), taskSortCriteria);
 	
-	cout << "generated " << _initialTasks.size() << " tasks." << endl;
-	for(unsigned int i=0; i< _initialTasks.size(); ++i)
-	{
-		cout<<"tache "<<i<<" : "<<endl<<_initialTasks.at(i).asString(true)<<endl;
-	}
 
 	std::vector<int> testNumberCPU;
 	
 	
-	// On calcule les min CPU
-	//cout<<"------------------------------------------------------"<<endl;
+	// we compute minCPU
 	for(unsigned int k = 1; k <= _initialTasks.size(); ++k)
 	{
-		//cout<<"k = "<<k<<endl;
 		float Utot = 0;
 		int minCPU = 0;
 		for(unsigned int i=k; i < _initialTasks.size(); ++i)
 		{
 			Utot += _initialTasks.at(i).getUtilisation() ;
-			//cout<<"_initialTasks.at("<<i<<").getUtilisation() = "<<_initialTasks.at(i).getUtilisation()<<endl;
 		}
-		//cout<<"Utot = "<<Utot<<endl;
 		if(_initialTasks.at(k-1).getUtilisation()!=1)
 		{
-			//cout<<"util != 1"<<endl;
-
 			minCPU = (k-1) + ceil(Utot/(1-_initialTasks.at(k-1).getUtilisation()));
-			/*cout<<"minCPU = "<<minCPU<<endl;
-			cout<<"_initialTasks.at("<<k-1<<").getUtilisation() "<<_initialTasks.at(k-1).getUtilisation()<<endl;
-			cout<<"(1-_initialTasks.at("<<k-1<<").getUtilisation()) "<<(1-_initialTasks.at(k-1).getUtilisation())<<endl;
-			cout<<"Utot/(1-_initialTasks.at("<<k-1<<").getUtilisation()) "<<Utot/(1-_initialTasks.at(k-1).getUtilisation())<<endl;
-			cout<<"ceil(Utot/(1-_initialTasks.at("<<k-1<<").getUtilisation())) "<<ceil(Utot/(1-_initialTasks.at(k-1).getUtilisation()))<<endl;*/
 		}
 		
 		testNumberCPU.push_back(minCPU);
-		//cout<<"------------------------------------------------------"<<endl;
 	}
-	cout<<"testNumberCPU :"<<endl;
-	for(unsigned int mo = 0; mo < testNumberCPU.size(); ++mo)
-	{
-		cout<<"k ="<<mo+1<<" pour "<<testNumberCPU.at(mo)<<" CPU"<<endl;
-	}
-	
+
+	// we initialise tne number of CPU and k before we can search for the min.
 	unsigned int cnt=0;
 	while(_numberCPU==0 && cnt < testNumberCPU.size())
 	{
@@ -92,41 +68,40 @@ void simEDFk::computeCPUandK(){
 		{
 			_numberCPU = testNumberCPU.at(cnt);
 			_k = cnt+1;
-			//cout<<"init _numberCPU a "<<_numberCPU<<endl;
 		}
 		cnt ++;
 	}
 	
+	// we search the minimal number of CPU and k
 	if(_numberCPU==0)
 	{
-		// toutes les taches ont une utilisation de 1, elle ont donc besoins chacune d'un proco.
+		// if every tasks have an utilisation of 1, then we need a core for every tasks
 		_numberCPU = _initialTasks.size();
-		// k est initilaisé à 0 => ok
 	}
 	else
 	{
+		// we search for the minimal number of CPU
 		for(unsigned int i = 0; i< testNumberCPU.size(); ++i)
 		{
 			if(testNumberCPU.at(i) < _numberCPU && testNumberCPU.at(i) != 0)
 			{
 				_numberCPU = testNumberCPU.at(i);
 				_k = i+1;
-				//cout<<"testNumberCPU.at(i) "<<testNumberCPU.at(i)<<endl;
-				//cout<<"_k "<<i+1<<endl;
 			}
 		}
 	}
 	if(_numberCPU < _k)
 	{
-		// On virtualise, mais si k plus grand => bug, donc doit rajouter un proco
+		// We can't have less core than priority tasks
 		_numberCPU = _k;
 	}
-	cout<<"_numberCPU min ="<<_numberCPU<<endl;
-	cout<<"_k min ="<<_k<<endl;
+
 	
 }
 
-
+/**
+* \details	Modify the priority of the k first tasks
+*/
 void simEDFk::modifyPriority(){
 	for(int i=0; i<_k; ++i)
 	{
@@ -136,6 +111,10 @@ void simEDFk::modifyPriority(){
 	
 }
 
+
+/**
+* \details	Run EDF-k from a file and display the result on the terminal
+*/
 void simEDFk::run(char* file)
 {
 	uploadTask(file);
@@ -159,6 +138,15 @@ void simEDFk::run(char* file)
 	}
 }
 
+
+/**
+* \details	Run EDF-k from a deque of tasks and return the result.
+* \return 	A vector containing the statistics of the system
+* 				vector[0]= average number of preemption
+* 				vector[1]= average number of migration
+*				vector[2]= average idle time
+*				vector[3]= average number of core
+*/
 vector<int> simEDFk::run(deque<Task> t)
 {
 	_initialTasks = t;
@@ -172,5 +160,3 @@ vector<int> simEDFk::run(deque<Task> t)
 	
 	return result;
 }
-
-

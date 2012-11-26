@@ -25,7 +25,7 @@ public:
 	int getStartTime();
 	int getLastCPU_Id();
 	bool getPriority();
-	Task* getTask(); // a vire après ?????
+	Task* getTask();
 
 	string asString();
 

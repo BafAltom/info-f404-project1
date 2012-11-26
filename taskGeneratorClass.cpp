@@ -6,6 +6,10 @@ int taskGenerator::ACCEPTED_PERIODS[19] =
 	{2, 3, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 28, 30, 32};
 int taskGenerator::ACCEPTED_PERIODS_size = 19;
 
+/**
+* \details	Compute the current utilisation of the system
+* \return 	the current utilisation of the system
+*/
 int taskGenerator::systemUtilization(vector<Task> tasks)
 {
 	int current_utiliz = 0;
@@ -14,6 +18,10 @@ int taskGenerator::systemUtilization(vector<Task> tasks)
 	return current_utiliz;
 }
 
+/**
+* \details	Generate a set of tasks
+* \return 	A vector containing thoses tasks
+*/
 vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 {
 	if (utPerc > numT * 100)

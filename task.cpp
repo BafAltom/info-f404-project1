@@ -9,6 +9,7 @@ Task::Task(int offset, int period, int deadline, int wcet) : _offset(offset), _p
 Task::Task(int offset, int period, int deadline, int wcet, bool priority) : _offset(offset), _period(period), _deadline(deadline), _wcet(wcet), _utilisation((float)wcet/period), _priority(priority)
 {	}
 
+
 Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0), _utilisation(0), _priority(false)
 {
 // This function does not check for correctness of input
@@ -33,6 +34,10 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0),
 
 }
 
+/**
+* \details	Generate a task from a string
+* \return 	A deque containing this task
+*/
 deque<Task> Task::generateFromString(string tasks_text)
 {
 	deque<Task> tasks;
@@ -47,11 +52,19 @@ deque<Task> Task::generateFromString(string tasks_text)
 	return tasks;
 }
 
+/**
+* \details	Compute the percentage of utilization of this task
+* \return 	The percentage of utilization of this task
+*/
 int Task::getUtilizationPercent()
 {
 	return (_wcet*100/_period);
 }
 
+/**
+* \details	Generate a string describing this tasks
+* \return 	A string describing this tasks
+*/
 string Task::asString(bool verbose)
 {
 	std::ostringstream s;
