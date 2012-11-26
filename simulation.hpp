@@ -34,7 +34,7 @@ public:
 	void generateNewJobs(int studyInterval);
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > getReadyJobs();
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > getRunningJobs();
-	void cleanAndCheckJobs(int t);
+	bool cleanAndCheckJobs(int t);
 	bool result();
 	bool JobNeedToBePreempted();
 

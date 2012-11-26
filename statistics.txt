@@ -1,0 +1,18 @@
+the result are display with this form (stat for global EDF / stat for EDF-k)
+statistics of the simulation : 	 	 5 tasks 	 |  10 tasks 	  |   15 tasks 	  |   20 tasks 	
+-----------------
+Utilisation of 30
+--------------------------------------------------------------------------------------------------------------------------------------------
+Average number of preemption = 	 	(38.8/97)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
+Average number of migration = 		(0/0)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
+Average idle time  = 			(387.3/387.3)	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
+Average number of Core used =  	 	(1/1)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
+-----------------
+Utilisation of 50
+--------------------------------------------------------------------------------------------------------------------------------------------
+Average number of preemption = 	 	(250.5/274.595)	 	 | 	(263.778/456.556)	 | 	(0/0)	 | 	(0/0)
+Average number of migration = 		(0/0)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
+Average idle time  = 			(1787.26/1787.26)	 | 	(915.889/915.889)	 | 	(0/0)	 | 	(0/0)
+Average number of Core used =  	 	(1/0.97619)	 	 | 	(1/1)	 | 	(0/0)	 | 	(0/0)
+-----------------
+Utilisation of 70

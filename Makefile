@@ -1,22 +1,22 @@
 CPP=g++
 CPPFLAGS=-Wall -g -pedantic -Wextra -std=c++98 -Weffc++ -Wstrict-null-sentinel
 LDFLAGS=
-EXEC=simGlobalEDF taskGenerator simEDFk globalEDFvsEDFk
+EXEC=simGlobalEDF taskGenerator simEDF-k globalEDFvsEDFk
 
 .PHONY: clean, mrproper
 
 all: $(EXEC)
 
-simGlobalEDF: simGlobalEDF.o task.o simulation.o job.o EDFComp.o
+simGlobalEDF: simGlobalEDF.o simGlobalEDFClass.o task.o simulation.o job.o EDFComp.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
-simEDFk: simEDFk.o task.o simulation.o job.o EDFComp.o
+simEDF-k: simEDF-k.o simEDFkClass.o task.o simulation.o job.o EDFComp.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
 taskGenerator: taskGenerator.o task.o EDFComp.o taskGeneratorClass.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 		
-globalEDFvsEDFk: globalEDFvsEDFk.o 
+globalEDFvsEDFk: globalEDFvsEDFk.o taskGeneratorClass.o simEDFkClass.o simGlobalEDFClass.o task.o simulation.o job.o EDFComp.o
 		$(CPP) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cpp

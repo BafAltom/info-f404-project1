@@ -13,8 +13,8 @@
 using namespace std;
 
 #include "task.hpp"
-#include "simEDFk.hpp"
-#include "simGlobalEDF.hpp"
+#include "simEDFkClass.hpp"
+#include "simGlobalEDFClass.hpp"
 #include "taskGeneratorClass.hpp"
 
 class GlobalEDFvsEDFk {
@@ -23,6 +23,7 @@ public:
 	
 	GlobalEDFvsEDFk();
 	void makeStat(int numTasks, int utilisation, int numTesting);
+	void makeStats();
 	
 
 private:

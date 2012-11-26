@@ -103,6 +103,7 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 	for (unsigned int i =0 ; i < tasks.size(); ++i)
 	{
 		tasks[i].setDeadline(tasks[i].getPeriod());
+		tasks[i].reComputeUtilisation();
 	}
 
 	int delta = abs(utPerc - systemUtilization(tasks));

@@ -15,7 +15,7 @@ public:
 		{
 			return false;
 		}
-		if(a->getPriority())
+		if(a->getPriority() && not b->getPriority())
 		{
 			//cout<<"a prior"<<endl;
 			if (smallestDeadlineIsMax) // running
@@ -27,7 +27,7 @@ public:
 				return true;
 			} 
 		}
-		else if(b->getPriority())
+		else if(b->getPriority() && not a->getPriority())
 		{
 			//cout<<"b prior"<<endl;
 			if (smallestDeadlineIsMax) // runn

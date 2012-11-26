@@ -27,7 +27,9 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0),
 	_period = atoi(parsedStrings[1].c_str());
 	_deadline = atoi(parsedStrings[2].c_str());
 	_wcet = atoi(parsedStrings[3].c_str());
+	
 	_utilisation = (float)_wcet / _period;
+	
 
 }
 
@@ -107,8 +109,6 @@ int Task::getDeadline()
 void Task::setWcet(int newWcet)
 {
 	if (newWcet <= 0) throw std::logic_error("setWcet : wcet must be > 0");
-	//if (newWcet > getDeadline()) throw std::logic_error("setWcet : deadline must be >= wcet");
-	//if (newWcet > getPeriod()) throw std::logic_error("setWcet : period must be >= wcet");
 	_wcet = newWcet;
 }
 
@@ -117,11 +117,13 @@ int Task::getWcet()
 	return _wcet;
 }
 
+void Task::reComputeUtilisation()
+{
+	_utilisation = (float)_wcet / _period;
+}
 void Task::setUtilisation(float newUtilisation)
 {
 	if (newUtilisation <= 0) throw std::logic_error("newUtilisation : utilisation must be > 0");
-	//if (newWcet > getDeadline()) throw std::logic_error("setWcet : deadline must be >= wcet");
-	//if (newWcet > getPeriod()) throw std::logic_error("setWcet : period must be >= wcet");
 	_utilisation = newUtilisation;
 }
 

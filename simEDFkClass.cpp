@@ -1,4 +1,4 @@
-#include "simEDFk.hpp"
+#include "simEDFkClass.hpp"
 
 bool taskSortCriteria (Task t1,Task t2) { return (t1.getUtilisation() > t2.getUtilisation()); }
 
@@ -116,6 +116,11 @@ void simEDFk::computeCPUandK(){
 			}
 		}
 	}
+	if(_numberCPU < _k)
+	{
+		// On virtualise, mais si k plus grand => bug, donc doit rajouter un proco
+		_numberCPU = _k;
+	}
 	cout<<"_numberCPU min ="<<_numberCPU<<endl;
 	cout<<"_k min ="<<_k<<endl;
 	
@@ -140,11 +145,18 @@ void simEDFk::run(char* file)
 	Simulation s(_numberCPU, _initialTasks);
 	vector<int> result = s.runGlobal();
 	
-	cout << "statistics of the simulation :"<<endl;
-	cout << "Number of preemption = " << result.at(0) << endl;
-	cout << "Number of migration = " << result.at(1) << endl;
-	cout << "idle time  = " << result.at(2) << endl;
-	cout << "Core used = " << _numberCPU << endl;
+	if(result.size()>0)
+	{
+		cout << "statistics of the simulation :"<<endl;
+		cout << "Number of preemption = " << result.at(0) << endl;
+		cout << "Number of migration = " << result.at(1) << endl;
+		cout << "idle time  = " << result.at(2) << endl;
+		cout << "Core used = " << _numberCPU << endl;
+	}
+	else
+	{
+		cout<<"This system is not schedulable"<<endl;
+	}
 }
 
 vector<int> simEDFk::run(deque<Task> t)
@@ -161,10 +173,4 @@ vector<int> simEDFk::run(deque<Task> t)
 	return result;
 }
 
-int main(int argc, char** argv)
-{
-	simEDFk edfk;
-	edfk.run(argv[1]);
 
-	return 0;
-}

@@ -34,6 +34,7 @@ public:
 	void setWcet(int newWcet);
 	int getWcet();
 	void setUtilisation(float newUtilisation);
+	void reComputeUtilisation();
 	float getUtilisation();
 	void setPriority(bool newPriority);
 	bool getPriority();

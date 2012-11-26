@@ -44,10 +44,10 @@ void Simulation::generateNewJobs(int t)
 	}
 }
 
-void Simulation::cleanAndCheckJobs(int t)
+bool Simulation::cleanAndCheckJobs(int t)
 {
 	// remove all jobs whose deadline is in the past (and check that they were completed successfully)
-	if (_jobs.empty()) return;
+	if (_jobs.empty()) return true;
 
 	// save CPUs
 	deque<Job> savedCPUs(_CPUs.size());
@@ -66,7 +66,8 @@ void Simulation::cleanAndCheckJobs(int t)
 			if (it->getComputationLeft() != 0)
 			{
 				cout << "FAILURE! at t = " << t << " and job : " << (*it) << endl;
-				exit(EXIT_FAILURE);
+				//exit(EXIT_FAILURE);
+				return false;
 			}
 			else
 			{
@@ -87,6 +88,8 @@ void Simulation::cleanAndCheckJobs(int t)
 			_CPUs[i] = &_jobs[posJob];
 		}
 	}
+	
+	return true;
 }
 
 long ppcm(long A, long B)
@@ -260,12 +263,13 @@ bool Simulation::JobNeedToBePreempted()
 vector<int> Simulation::runGlobal()  
 {
 	long studyInterval = computeStudyInterval();
+	bool isSchedulable = true;
 
 	_jobs.clear();
 
 	_t = 0;
 	cout << "study interval : " << studyInterval << endl;
-	while (_t < studyInterval) // main loop
+	while (_t < studyInterval && isSchedulable) // main loop
 	{
 		if (DEBUG)
 		{
@@ -368,17 +372,18 @@ vector<int> Simulation::runGlobal()
 
 		// advance time
 		_t += _deltaT;
-		cleanAndCheckJobs(_t);
+		isSchedulable = cleanAndCheckJobs(_t);
 
 	}
 
 	//cout << report() << endl;
-	
 	vector<int> result;
-	result.push_back(preemption_counter);
-	result.push_back(migration_counter);
-	result.push_back(idle_time_counter);
-	
+	if(isSchedulable)
+	{	
+		result.push_back(preemption_counter);
+		result.push_back(migration_counter);
+		result.push_back(idle_time_counter);
+	}
 	return result;
 }
 
