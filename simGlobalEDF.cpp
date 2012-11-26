@@ -32,9 +32,14 @@ void simGlobalEDF::uploadTask(char* file){
 }
 
 void simGlobalEDF::computeCPU(){
-		// a faire
-		_numberCPU=2;
-	
+		int globalUtilizationPerc = 0;
+		for (unsigned int i = 0; i < _tasks_generated.size(); ++i)
+		{
+			globalUtilizationPerc += _tasks_generated.at(i).getUtilizationPercent();
+		}
+
+		cout << "computeCPUS : " << globalUtilizationPerc << endl;
+		_numberCPU = ceil(globalUtilizationPerc/100.0);
 }
 
 

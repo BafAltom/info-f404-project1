@@ -3,6 +3,7 @@ main
 taskGenerator
 simEDFk
 simGlobalEDF
+globalEDFvsEDFk
 
 #output files
 out*
