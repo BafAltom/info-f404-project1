@@ -41,23 +41,11 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 
 	for (unsigned int i = 0; i < tasks.size(); ++i)
 	{
-		// modify wcet or period? --> random choice
-		if (/*rand()%2*/0 == 0)
-		{
-			int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
-			tasks[i].setWcet(max(newWcet, 1));
+		int newWcet = (int)(tasks[i].getWcet() * utilizFactor);
+		tasks[i].setWcet(max(newWcet, 1));
 
-			if (tasks[i].getWcet() > tasks[i].getPeriod())
-				tasks[i].setPeriod(tasks[i].getWcet());
-		}
-		else
-		{
-			int newPeriod = (int) (tasks[i].getPeriod() * (1/utilizFactor));
-			tasks[i].setPeriod(max(newPeriod, 1));
-
-			if (tasks[i].getWcet() > tasks[i].getPeriod())
-				tasks[i].setWcet(tasks[i].getPeriod());
-		}
+		if (tasks[i].getWcet() > tasks[i].getPeriod())
+			tasks[i].setPeriod(tasks[i].getWcet());
 	}
 
 	cout << "--------------------- after rescaling" << endl;
@@ -72,37 +60,29 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 	{
 		bool mustDecreaseUtil = (current_utiliz - utPerc > 0);
 
+		// check that we are not stuck
+		bool stuck = true;
+		for (unsigned int i = 0; i < tasks.size(); ++i)
+		{
+			if (mustDecreaseUtil)
+				stuck = (stuck and tasks.at(i).getWcet() == 1);
+			else
+				stuck = (stuck and tasks.at(i).getWcet() == tasks.at(i).getPeriod());
+		}
+		if (stuck)
+		{
+			cout << "Dead end. Try again." << endl;
+			exit(EXIT_FAILURE);
+		}
+
 		int rndTaskP = rand() % tasks.size();
 		Task* rndTask = &tasks[rndTaskP];
 
-		// which small modification do we make? --> random choice
-		int rollOfDice = /*rand() % 2*/0;
+		if (rndTask->getWcet() == 1 or rndTask->getWcet() == rndTask->getPeriod()) continue;
 
-		// Can we do this modification on this task?
-		if (mustDecreaseUtil)
-		{
-			if (rndTask->getWcet() == 1)
-				continue; //rollOfDice = 1;
-		}
-		else
-		{
-			if (rndTask->getUtilizationPercent() == 100)
-				rollOfDice = 0;
-		}
-
-
-		if (rollOfDice == 0) // change wcet
-		{
-			int oldWcet = rndTask->getWcet();
-			int newWcet = mustDecreaseUtil ? --oldWcet : ++oldWcet;
-			rndTask->setWcet(newWcet);
-		}
-		else // change period
-		{
-			int oldPeriod = rndTask->getPeriod();
-			int newPeriod = mustDecreaseUtil ? ++oldPeriod : --oldPeriod;
-			rndTask->setPeriod(newPeriod);
-		}
+		int oldWcet = rndTask->getWcet();
+		int newWcet = mustDecreaseUtil ? --oldWcet : ++oldWcet;
+		rndTask->setWcet(newWcet);
 
 		current_utiliz = systemUtilization(tasks);
 		++loop_counter;
