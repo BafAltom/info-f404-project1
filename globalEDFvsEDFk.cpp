@@ -77,7 +77,7 @@ void GlobalEDFvsEDFk::makeStats()
 	cout << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 	outfile << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 		
-	for(int utilisation = 50; utilisation <= 400 ; utilisation+= 50)
+	for(int utilisation = 250; utilisation <= 400 ; utilisation+= 50)
 	{
 		cout<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
 		outfile<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
@@ -93,7 +93,7 @@ void GlobalEDFvsEDFk::makeStats()
 			int SystemSchedulable =0;
 			vector<float> statGlobalAverage = vector<float>(6);
 			vector<float> statEDFkAverage = vector<float>(6);
-			while(cnt < 50)
+			while(cnt < 10)
 			{
 				// we generate the tasks
 				vector<Task> tasks = task_generator.generateTasks(utilisation, NumberOftask, 20);
@@ -146,7 +146,14 @@ void GlobalEDFvsEDFk::makeStats()
 			statGlobalAverage.push_back(GlobalSchedulable);
 			statGlobalAverage.push_back(SystemSchedulable);
 			statEDFkAverage.push_back(EDFkSchedulable);
-			NumberOftask += 5;
+			if(i==3)
+			{
+				NumberOftask = 5;
+			}
+			else
+			{
+				NumberOftask += 5;
+			}
 			statGlobalFinale.push_back(statGlobalAverage);
 			statEDFkFinale.push_back(statEDFkAverage);	
 		}
