@@ -19,6 +19,7 @@ void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 	int cnt=0;
 	while(cnt <= numTesting)
 	{
+		cout << "cnt : " << cnt << " / " << numTesting << endl;
 		// we generate the tasks
 		vector<Task> tasks = task_generator.generateTasks(utilisation, numTasks, 20);
 		deque<Task> t;
