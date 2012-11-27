@@ -150,7 +150,7 @@ while (_t < studyInterval) {
 
 		\paragraph*{Récoltes de statistiques}~\\
 
-			Notre simulateur renvoi l'intervalle d'étude, le nombre de préemptions, d'instants oisifs et de migrations apparues au cours de la simulation.
+			Notre simulateur renvoie l'intervalle d'étude, le nombre de préemptions, d'instants oisifs et de migrations apparues au cours de la simulation.
 
 		
 		%Nous avons récoltés les données suivantes :
@@ -163,12 +163,12 @@ while (_t < studyInterval) {
 		%\end{description}
 	
 	\subsection{Implémentation du comparateur}
-		Nous avons crée un comparateur lançant deux types de comparaisons, en fonction de ces paramètres.
+		Nous avons crée un comparateur lançant deux types de comparaisons, en fonction de ses paramètres.
 		\begin{enumerate}
-			\item ./globalEDFvsEDF-k -u $utilisationVoulue$ -n $nombreDeCœur$ -t $nombreDeTests$\\
+			\item \verb?./globalEDFvsEDF-k -u utilisationVoulue -n nombreDeCœur -t nombreDeTests?
 					On compare alors EDF-k et global EDF pour sur des systèmes correspondants.\\
 					On lance donc successivement TaskGenerator puis simGlobalEDF et simEDF-k, mais sans passer par des fichiers textes, ils se passent le système et les différents paramètres directement.
-			\item ./globalEDFvsEDF-k\\
+			\item \verb?./globalEDFvsEDF-k [sans parametres]?
 					On compare ici EDF-k et global EDF pour différentes valeurs d'utilisation et de nombre de tâches à des fins de statistiques.\\
 					On essaye des utilisations de (30-50-70-90-110-130-150) pour des systèmes de (5-10-15-20) tâches.\\
 					Le résultat est affiché et stocké dans un fichier "statistics.txt"
@@ -178,7 +178,7 @@ while (_t < studyInterval) {
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %%
-%%	diificultés rencontrées
+%%	difficultés rencontrées
 %%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -195,7 +195,7 @@ while (_t < studyInterval) {
 	\subsection{Priorité en EDF-k}\hypertarget{prioriteEDFk}{}
 
 		La principale difficulté de EDF-k est la gestion des tâches prioritaires.\\
-		La méthode vu en cours consistait à mettre les deadlines de ces tâches à $- \infty$. mais notre implémentation du simulateur utilise fréquemment ces deadlines pour divers calculs (tester l'ordonnancabilité du système, ...) et la gestion de deadline à $- \infty$ aurait rendu notre code trop complexe.\\
+		La méthode vue en cours consistait à mettre les deadlines de ces tâches à $- \infty$. mais notre implémentation du simulateur utilise fréquemment ces deadlines pour divers calculs (tester l'ordonnancabilité du système, ...) et la gestion de deadline à $- \infty$ aurait rendu notre code trop complexe.\\
 		~\\
 		Il nous a donc semblé plus simple de rajouter un paramètre booléen "priority" aux tâches (et donc à leurs jobs), ainsi on ne doit se préoccuper de la priorité qu'à deux endroits :
 		\begin{enumerate}
@@ -203,7 +203,7 @@ while (_t < studyInterval) {
 			\item Lors du choix des jobs a préempter, on utilise la méthode "JobNeedToBePreempted()" qui regarde les sommets de ready et running pour définir si une préemption est nécessaire.\\
 				S'il y a des jobs prioritaires, ils sont alors privilégiés (ont leur attribue un cœur ou les laisse terminer leur job), sinon on se base sur les deadlines.
 		\end{enumerate}
-		Ainsi le système peut fonctionner avec des jobs prioritaires, ou sans jobs prioritaire, devenant alors un simulateur global EDF.
+		Ainsi le système peut fonctionner avec des jobs prioritaires, ou sans jobs prioritaires, devenant alors un simulateur global EDF.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -217,7 +217,7 @@ while (_t < studyInterval) {
  	En se basant sur notre comparateur, on peut déjà analyser assez finement les différences entre global EDF et EDF-k.\\
 	
 	\paragraph*{Nombre de cœurs}~\\
-		Quelque soit le nombre de tâches, jusqu'à une utilisation de 70, ils utilisent tout deux un seul cœur.
+		Quelque soit le nombre de tâches, jusqu'à une utilisation de 70, ils utilisent touss deux un seul cœur.
 		Mais passez ce cap, en moyenne global EDF commence à utiliser de plus en plus de cœurs tandis que EDF-k reste stable.\\
 		~\\
 		EDF-k est donc plus intéressant pour des système avec une plus grosse utilisation.
