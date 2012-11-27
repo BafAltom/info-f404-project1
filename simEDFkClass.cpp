@@ -116,6 +116,7 @@ void simEDFk::modifyPriority(){
 */
 void simEDFk::run(char* file)
 {
+	_numberCPU=0;
 	uploadTask(file);
 	computeCPUandK();
 	modifyPriority();
@@ -150,6 +151,7 @@ void simEDFk::run(char* file)
 */
 vector<int> simEDFk::run(deque<Task> t)
 {
+	_numberCPU=0;
 	_initialTasks = t;
 	computeCPUandK();
 	modifyPriority();
