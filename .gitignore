@@ -4,7 +4,7 @@ taskGenerator
 simEDFk
 simEDF-k
 simGlobalEDF
-globalEDFvsEDFk
+globalEDFvsEDF-k
 
 #output files
 out*

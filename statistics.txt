@@ -1,25 +1,26 @@
-the result are display with this form (stat for global EDF / stat for EDF-k)
+The result are display with this form (stat for global EDF / stat for EDF-k)
+If the value is -1, it means that the generator has not happened to create systems with these settings
 statistics of the simulation : 	 	 5 tasks 	 |  10 tasks 	  |   15 tasks 	  |   20 tasks 	
 -----------------
 Utilisation of 30
 --------------------------------------------------------------------------------------------------------------------------------------------
-Average number of preemption = 	 	(4.12/34.4)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
-Average number of migration = 		(0/0)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
-Average idle time  = 			(77.4/77.4)	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
-Average number of Core used =  	 	(1/1)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
+Average number of preemption = 	 	(18.2/34.68)	 	 | 	(-1/-1)	 | 	(-1/-1)	 | 	(-1/-1)
+Average number of migration = 		(0/0)	 	 | 	(-1/-1)	 | 	(-1/-1)	 | 	(-1/-1)
+Average idle time  = 			(134.04/134.04)	 | 	(-1/-1)	 | 	(-1/-1)	 | 	(-1/-1)
+Average number of Core used =  	 	(1/1)	 	 | 	(-1/-1)	 | 	(-1/-1)	 | 	(-1/-1)
 -----------------
 Utilisation of 50
 --------------------------------------------------------------------------------------------------------------------------------------------
-Average number of preemption = 	 	(102.944/151.167)	 	 | 	(1179.38/1262.25)	 | 	(0/0)	 | 	(0/0)
-Average number of migration = 		(0/0)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
-Average idle time  = 			(940.083/940.111)	 | 	(3435.75/1536.38)	 | 	(0/0)	 | 	(0/0)
-Average number of Core used =  	 	(1/1)	 	 | 	(1/0.75)	 | 	(0/0)	 | 	(0/0)
+Average number of preemption = 	 	(173.75/193.062)	 	 | 	(173.25/928)	 | 	(-1/-1)	 | 	(-1/-1)
+Average number of migration = 		(0/0)	 	 | 	(0/0)	 | 	(-1/-1)	 | 	(-1/-1)
+Average idle time  = 			(1623.5/1623.5)	 | 	(581.75/581.75)	 | 	(-1/-1)	 | 	(-1/-1)
+Average number of Core used =  	 	(1/1)	 	 | 	(1/1)	 | 	(-1/-1)	 | 	(-1/-1)
 -----------------
 Utilisation of 70
 --------------------------------------------------------------------------------------------------------------------------------------------
-Average number of preemption = 	 	(205.091/157.886)	 	 | 	(3390.46/3878.5)	 | 	(0/0)	 | 	(0/0)
-Average number of migration = 		(0/0)	 	 | 	(0/0)	 | 	(0/0)	 | 	(0/0)
-Average idle time  = 			(1877.05/1730.68)	 | 	(12800/12711.1)	 | 	(0/0)	 | 	(0/0)
-Average number of Core used =  	 	(1/0.931818)	 	 | 	(1/0.846154)	 | 	(0/0)	 | 	(0/0)
+Average number of preemption = 	 	(215.761/216.652)	 	 | 	(2417.13/2494.8)	 | 	(-1/-1)	 | 	(-1/-1)
+Average number of migration = 		(0/0)	 	 | 	(0/0)	 | 	(-1/-1)	 | 	(-1/-1)
+Average idle time  = 			(2777.63/2777.65)	 | 	(10783/10783)	 | 	(-1/-1)	 | 	(-1/-1)
+Average number of Core used =  	 	(1/1)	 	 | 	(1/1)	 | 	(-1/-1)	 | 	(-1/-1)
 -----------------
 Utilisation of 90
