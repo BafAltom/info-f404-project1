@@ -67,12 +67,12 @@ void GlobalEDFvsEDFk::makeStats()
 	ofstream outfile;
 	outfile.open ("statistics.txt");
 	
-	cout<<"The result are display with this form (stat for global EDF / stat for EDF-k)"<<endl;
-	outfile <<"The result are display with this form (stat for global EDF / stat for EDF-k)"<<endl;
-	cout<<"For the scheduling we don't take into consideration the non schedulable system created by the generator."<<endl;
+	cout<<"The result are displayed as : (stats for global EDF / stats for EDF-k)"<<endl;
+	outfile <<"The results are displayed as : (stat for global EDF / stat for EDF-k)"<<endl;
+	cout<<"For the scheduling we don't take into consideration the non schedulable systems created by the generator."<<endl;
 	outfile <<"For the scheduling we don't take into consideration the non schedulable system created by the generator."<<endl;
-	cout<<"If the value is -1, it means that the generator has not happened to create systems with these settings"<<endl;
-	outfile <<"If the value is -1, it means that the generator has not happened to create systems with these settings"<<endl;
+	cout<<"If the value is -1, it means that the generator did not managed to create any system with these settings"<<endl;
+	outfile <<"If the value is -1, it means that the generator did not managed to create any system with these settings"<<endl;
 	cout << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 	outfile << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 		

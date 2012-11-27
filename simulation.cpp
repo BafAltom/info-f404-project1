@@ -251,7 +251,7 @@ bool Simulation::JobNeedToBePreempted()
 {
 	if(_readyJobs.top()->getPriority())
 	{
-		assert (not _runningJobs.top()->getPriority())
+		assert (not _runningJobs.top()->getPriority());
 		return true;
 	}
 	else if(_runningJobs.top()->getPriority())
