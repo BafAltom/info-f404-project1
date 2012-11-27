@@ -130,9 +130,9 @@ void simEDFk::run(char* file)
 		cout << "Number of preemption = " << result.at(0) << endl;
 		cout << "Number of migration = " << result.at(1) << endl;
 		cout << "idle time  = " << result.at(2) << endl;
-		cout << "studyInterval  = " << result.at(3) << endl;
+		cout << "studyInterval  = " << result.at(4) << endl;
 		cout << "Core used = " << _numberCPU << endl;
-		cout << "Core actually used = " << result.at(3) << endl;
+		cout << "Core necessary = " << result.at(3) << endl;
 	}
 	else
 	{
@@ -144,11 +144,12 @@ void simEDFk::run(char* file)
 /**
 * \details	Run EDF-k from a deque of tasks and return the result.
 * \return 	A vector containing the statistics of the system
-* 				vector[0]= average number of preemption
-* 				vector[1]= average number of migration
-*				vector[2]= average idle time
-*				vector[3]= studyInterval
-*				vector[4]= average number of core
+* 				vector[0]= number of preemption
+* 				vector[1]= number of migration
+*				vector[2]= idle time
+*				vector[3]= number of core necessary
+*				vector[4]= studyInterval
+*				vector[5]= number of core used
 */
 vector<int> simEDFk::run(deque<Task> t)
 {

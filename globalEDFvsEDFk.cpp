@@ -8,8 +8,8 @@ GlobalEDFvsEDFk::GlobalEDFvsEDFk(){	}
 */
 void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 {
-	vector<int> statGlobalTot = vector<int>(5);
-	vector<int> statEDFkTot = vector<int>(5);
+	vector<int> statGlobalTot = vector<int>(6);
+	vector<int> statEDFkTot = vector<int>(6);
 	
 	srand(time(NULL));
 	taskGenerator task_generator;
@@ -49,8 +49,9 @@ void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 	cout << "Average number of preemption = \t \t" << (float)statGlobalTot.at(0)/numTesting<<"\t | \t" << (float)statEDFkTot.at(0)/numTesting << endl;
 	cout << "Average number of migration = 	\t" << (float)statGlobalTot.at(1)/numTesting<<"\t | \t" << (float)statEDFkTot.at(1)/numTesting << endl;
 	cout << "Average idle time  = \t		" << (float)statGlobalTot.at(2)/numTesting<<"\t | \t" << (float)statEDFkTot.at(2)/numTesting << endl;
-	cout << "Average study interval =  \t \t" << (float)statGlobalTot.at(3)/numTesting<<"\t | \t" << (float)statEDFkTot.at(3)/numTesting << endl;
-	cout << "Average number of Core used =  \t \t" << (float)statGlobalTot.at(4)/numTesting<<"\t | \t" << (float)statEDFkTot.at(4)/numTesting << endl;
+	cout << "Average study interval =  \t \t" << (float)statGlobalTot.at(4)/numTesting<<"\t | \t" << (float)statEDFkTot.at(4)/numTesting << endl;
+	cout << "Average number of Core used =  \t \t" << (float)statGlobalTot.at(5)/numTesting<<"\t | \t" << (float)statEDFkTot.at(5)/numTesting << endl;
+	cout << "Average number of Core necessary =  \t" << (float)statGlobalTot.at(3)/numTesting<<"\t | \t" << (float)statEDFkTot.at(3)/numTesting << endl;
 
 	
 }
@@ -76,7 +77,7 @@ void GlobalEDFvsEDFk::makeStats()
 	cout << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 	outfile << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 		
-	for(int utilisation = 30; utilisation <= 150 ; utilisation+= 20)
+	for(int utilisation = 50; utilisation <= 400 ; utilisation+= 50)
 	{
 		cout<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
 		outfile<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
@@ -90,8 +91,8 @@ void GlobalEDFvsEDFk::makeStats()
 			int EDFkSchedulable = 0;
 			int GlobalSchedulable = 0;
 			int SystemSchedulable =0;
-			vector<float> statGlobalAverage = vector<float>(5);
-			vector<float> statEDFkAverage = vector<float>(5);
+			vector<float> statGlobalAverage = vector<float>(6);
+			vector<float> statEDFkAverage = vector<float>(6);
 			while(cnt < 50)
 			{
 				// we generate the tasks
@@ -122,23 +123,6 @@ void GlobalEDFvsEDFk::makeStats()
 				}
 				cnt ++;
 			}
-				/*// we compute the average statistics
-					for(unsigned int i = 0; i< statGlobalAverage.size(); ++i)
-					{
-						if(systSchedulable > 0.0)
-						{
-							statEDFkAverage.at(i)=statEDFkAverage.at(i)/systSchedulable;
-							statGlobalAverage.at(i)=statGlobalAverage.at(i)/systSchedulable;
-						}
-						else
-						{
-							statEDFkAverage.at(i)=-1;
-							statGlobalAverage.at(i)=-1;
-						}
-					}
-					NumberOftask += 5;
-					statGlobalFinale.push_back(statGlobalAverage);
-					statEDFkFinale.push_back(statEDFkAverage);	*/
 			// we compute the average statistics
 			for(unsigned int i = 0; i< statGlobalAverage.size(); ++i)
 			{
@@ -171,9 +155,10 @@ void GlobalEDFvsEDFk::makeStats()
 		 << "Average number of preemption = \t \t" <<"("<<statGlobalFinale.at(0).at(0)<<"/"<<statEDFkFinale.at(0).at(0)<<")"<<"\t \t | \t"  <<"("<<statGlobalFinale.at(1).at(0)<<"/"<<statEDFkFinale.at(1).at(0)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(0)<<"/"<<statEDFkFinale.at(2).at(0)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(3).at(0)<<"/"<<statEDFkFinale.at(3).at(0)<<")" << "\n"
 		 << "Average number of migration = 	\t" <<"("<<statGlobalFinale.at(0).at(1)<<"/"<<statEDFkFinale.at(0).at(1)<<")"<<"\t \t | \t" <<"("<<statGlobalFinale.at(1).at(1)<<"/"<<statEDFkFinale.at(1).at(1)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(2).at(1)<<"/"<<statEDFkFinale.at(2).at(1)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(3).at(1)<<"/"<<statEDFkFinale.at(3).at(1)<<")" << "\n"
 		 << "Average idle time  = \t		" <<"("<<statGlobalFinale.at(0).at(2)<<"/"<<statEDFkFinale.at(0).at(2)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(1).at(2)<<"/"<<statEDFkFinale.at(1).at(2)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(2)<<"/"<<statEDFkFinale.at(2).at(2)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(2)<<"/"<<statEDFkFinale.at(3).at(2)<<")" << "\n"
-		 << "Average study interval  = \t" <<"("<<statGlobalFinale.at(0).at(3)<<"/"<<statEDFkFinale.at(0).at(3)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(1).at(3)<<"/"<<statEDFkFinale.at(1).at(3)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(3)<<"/"<<statEDFkFinale.at(2).at(3)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(3)<<"/"<<statEDFkFinale.at(3).at(3)<<")" << "\n"
-		 << "Average number of Core used =  \t \t" <<"("<<statGlobalFinale.at(0).at(4)<<"/"<<statEDFkFinale.at(0).at(4)<<")"<<"\t \t | \t" <<"("<<statGlobalFinale.at(1).at(4)<<"/"<<statEDFkFinale.at(1).at(4)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(4)<<"/"<<statEDFkFinale.at(2).at(4)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(4)<<"/"<<statEDFkFinale.at(3).at(4)<<")" << "\n"
-		 << "Number of systems scheduled =  \t \t" <<"("<<statGlobalFinale.at(0).at(5)<<"/"<<statEDFkFinale.at(0).at(5)<<")"<<"on "<<statGlobalFinale.at(0).at(6)<<"\t \t | \t" <<"("<<statGlobalFinale.at(1).at(5)<<"/"<<statEDFkFinale.at(1).at(5)<<")"<<"on "<<statGlobalFinale.at(1).at(6)<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(5)<<"/"<<statEDFkFinale.at(2).at(5)<<")"<<"on "<<statGlobalFinale.at(2).at(6)<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(5)<<"/"<<statEDFkFinale.at(3).at(5)<<")"<<"on "<<statGlobalFinale.at(3).at(6) << "\n";
+		 << "Average study interval  = \t" <<"("<<statGlobalFinale.at(0).at(4)<<"/"<<statEDFkFinale.at(0).at(4)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(1).at(4)<<"/"<<statEDFkFinale.at(1).at(4)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(4)<<"/"<<statEDFkFinale.at(2).at(4)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(4)<<"/"<<statEDFkFinale.at(3).at(4)<<")" << "\n"
+		 << "Average number of Core used =  \t \t" <<"("<<statGlobalFinale.at(0).at(5)<<"/"<<statEDFkFinale.at(0).at(5)<<")"<<"\t \t | \t" <<"("<<statGlobalFinale.at(1).at(5)<<"/"<<statEDFkFinale.at(1).at(5)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(5)<<"/"<<statEDFkFinale.at(2).at(5)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(5)<<"/"<<statEDFkFinale.at(3).at(5)<<")" << "\n"
+		 << "Average number of Core necessary =  \t \t" <<"("<<statGlobalFinale.at(0).at(3)<<"/"<<statEDFkFinale.at(0).at(3)<<")"<<"\t \t | \t" <<"("<<statGlobalFinale.at(1).at(3)<<"/"<<statEDFkFinale.at(1).at(3)<<")"<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(3)<<"/"<<statEDFkFinale.at(2).at(3)<<")"<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(3)<<"/"<<statEDFkFinale.at(3).at(3)<<")" << "\n"
+		 << "Number of systems scheduled =  \t \t" <<"("<<statGlobalFinale.at(0).at(6)<<"/"<<statEDFkFinale.at(0).at(6)<<")"<<"on "<<statGlobalFinale.at(0).at(7)<<"\t \t | \t" <<"("<<statGlobalFinale.at(1).at(6)<<"/"<<statEDFkFinale.at(1).at(6)<<")"<<"on "<<statGlobalFinale.at(1).at(7)<<"\t | \t"  <<"("<<statGlobalFinale.at(2).at(6)<<"/"<<statEDFkFinale.at(2).at(6)<<")"<<"on "<<statGlobalFinale.at(2).at(7)<<"\t | \t" <<"("<<statGlobalFinale.at(3).at(6)<<"/"<<statEDFkFinale.at(3).at(6)<<")"<<"on "<<statGlobalFinale.at(3).at(7) << "\n";
 		cout << s.str();
 		outfile << s.str();
 	}

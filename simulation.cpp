@@ -249,12 +249,11 @@ int Simulation::findInCPUs(Job* j)
 */
 bool Simulation::JobNeedToBePreempted()
 {
-	if(_readyJobs.top()->getPriority())
+	if(_readyJobs.top()->getPriority() and not _runningJobs.top()->getPriority())
 	{
-		assert (not _runningJobs.top()->getPriority())
 		return true;
 	}
-	else if(_runningJobs.top()->getPriority())
+	else if(_runningJobs.top()->getPriority() and not _readyJobs.top()->getPriority())
 	{
 		return false;
 	}
@@ -271,7 +270,8 @@ bool Simulation::JobNeedToBePreempted()
 * 				vector[0]= average number of preemption
 * 				vector[1]= average number of migration
 *				vector[2]= average idle time
-*				vector[3]= studyInterval
+* 				vector[3]= number_of_core_necessary
+*				vector[4]= studyInterval
 */
 vector<int> Simulation::runGlobal()  
 {
