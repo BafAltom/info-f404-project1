@@ -399,13 +399,6 @@ vector<int> Simulation::runGlobal()
 }
 
 
-bool Simulation::result()
-// TODO : return true if schedulable, false if not, and throw an exception if run() has not yet been called
-{
-	return false; 
-}
-
-
 template <class T>
 int findInDeque (T t, deque<T> aDeque)
 // return -1 if T is not in aDeque

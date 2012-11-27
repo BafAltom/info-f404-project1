@@ -24,21 +24,25 @@ public:
 	Simulation(int nCPU, deque<Task> t);
 	virtual ~Simulation();
 
-	virtual long computeStudyInterval();
-
-	int maxOffsetOf(std::deque<Task> jobs);
-	bool isInCPUs(Job* j);
-	int positionOfFirstIdleCPU();
-	int findInCPUs(Job* j);
 	vector<int> runGlobal();
+
+
+private:
+
+	long computeStudyInterval();
 	void generateNewJobs(int studyInterval);
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > getReadyJobs();
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > getRunningJobs();
 	bool cleanAndCheckJobs(int t);
-	bool result();
 	bool JobNeedToBePreempted();
+	
+	int maxOffsetOf(std::deque<Task> jobs);
+	bool isInCPUs(Job* j);
+	int positionOfFirstIdleCPU();
+	int findInCPUs(Job* j);
 
-	// everything is public
+
+
 	int _t;
 	int _deltaT;
 	deque<Task> _tasks;
