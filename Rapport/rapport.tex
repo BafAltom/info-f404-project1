@@ -6,7 +6,14 @@
 \usepackage{color}
 \usepackage{verbatim}
 \definecolor{grey}{rgb}{0.9,0.9,0.9}
+\usepackage{boites}
+\usepackage{float}
+\usepackage{chngpage}
+\usepackage{wrapfig}
 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\pagestyle{fancy} % voir si laisse ce style ou pas ?
 \lstset{
 language=C++,
 basicstyle=\footnotesize\fontfamily{pcr},
@@ -27,53 +34,80 @@ breaklines=true
 \begin{document}
 \maketitle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%	Intro
+%%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-Le but de ce projet était de construire en C++ un simulateur d'ordonnancement multiprocesseur d'un systèmes de tâches à temps réel via EDF Global ou EDF-k, ainsi qu'un générateur de systèmes de tâche permettant de spécifier le nombre de tâches du système ainsi que son utilisation globale.\\
+	Le but de ce projet était de construire en C++ un simulateur d'ordonnancement multiprocesseur d'un systèmes de tâches à temps réel via EDF Global ou 		EDF-k, ainsi qu'un générateur de systèmes de tâche permettant de spécifier le nombre de tâches du système ainsi que son utilisation globale.\\		
 
-Ensuite, il nous était demandé d'utiliser ces modules pour comparer les deux algorithmes (EDF Global et EDF-k) selon le nombre de préemptions, de migrations, de coeurs utilisés et d'instants oisifs.
+	Ensuite, il nous était demandé d'utiliser ces modules pour comparer les deux algorithmes (EDF Global et EDF-k) selon le nombre de préemptions, de 			migrations, de cœurs utilisés et d'instants oisifs.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%	Implémentation
+%%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Choix d'implémentation}
 
-\subsection{Nature du simulateur}
-Notre simulateur utilise un temps discret (comme vu en cours) et est à pas constant. Il simule le système passé en paramètre avec un nombre de coeur choisi par l'utilisateur, mais contient aussi une fonction permettant de calculer ce nombre. La simulation durera le temps maximal nécessaire pour effectuer une période complète ($2*PPCM(T_i) + max(O_i)$).
+	\subsection{Nature du simulateur}
+		Notre simulateur utilise un temps discret (comme vu en cours) et est à pas constant. Il simule le système passé en paramètre avec un nombre de cœur 		choisi par l'utilisateur, mais contient aussi une fonction permettant de calculer ce nombre. La simulation durera le temps maximal nécessaire pour 			effectuer une période complète ($2*PPCM(T_i) + max(O_i)$).
 
-\subsection{Nature du système}
-Comme demandé par l'énoncé, le simulateur accepte des systèmes périodiques à départ différé et à échéance contrainte. Il ne vérifie pas la faisabilité du système avant de commencer, mais s'arrête dés qu'un travail manque son échéance.\\
+	\subsection{Nature du système}
+		Comme demandé par l'énoncé, le simulateur accepte des systèmes périodiques à départ différé et à échéance contrainte. Il ne vérifie pas la 					faisabilité du système avant de commencer, mais s'arrête dés qu'un travail manque son échéance.\\
 
-En pratique, les systèmes générés sont cependants à échéances implicites.
-En effet, nous avons dans ce cas des systèmes dont on peut calculer la faisabilité ($U_{max} \le 1$) et le nombre de coeurs requis ($\lceil U_{globale} \rceil$) sans trop de complexité\footnote{Précisons : Ceci est la solution proposée par Mr Goossens}.
+		En pratique, les systèmes générés sont cependant à échéances implicites.
+		En effet, nous avons dans ce cas des systèmes dont on peut calculer la faisabilité ($U_{max} \le 1$) et le nombre de cœurs requis ($\lceil 					U_{globale} \rceil$) sans trop de complexité\footnote{Précisons : Ceci est la solution proposée par Mr Goossens}.
 
-\subsection{Génération de tâches}
-La génération du système de $n$ tâches avec une utilisation $U_{globale}$ se fait en trois étapes.\\
+	\subsection{Génération de tâches}
+		La génération du système de $n$ tâches avec une utilisation $U_{globale}$ se fait en trois étapes.\\
 
-Premièrement, on génère les $n$ tâches avec des paramètres aléatoires (distribution uniforme entre deux bornes pour chaque paramètre). Le WCET est bien entendu borné par la valeur de l'échéance.\\
+		Premièrement, on génère les $n$ tâches avec des paramètres aléatoires (distribution uniforme entre deux bornes pour chaque paramètre). Le WCET est 			bien entendu borné par la valeur de l'échéance.\\
 
-Ensuite, on calcule le facteur d'erreur $F_u = \frac{\Sigma U_i}{U_{globale}}$ et on l'applique à toutes les tâches soit en multipliant le WCET soit en divisant la période (une chance sur deux pour chaque tâche).\\
+		Ensuite, on calcule le facteur d'erreur $F_u = \frac{\Sigma U_i}{U_{globale}}$ et on l'applique à toutes les tâches soit en multipliant le WCET 			soit en	divisant la période (une chance sur deux pour chaque tâche).\\
 
-Ceci ne nous donne pas encore l'utilisation demandée pour deux raisons : premièrement, le système étant à temps discret, les résultats des opérations sont toujours arrondies à l'entier le plus proche ce qui crée des imprécisions. Ensuite, le facteur d'erreur est limité par les contraintes logiques des tâches ($wcet \ge 1$, $wcet \le deadline$, etc).\\
+		Ceci ne nous donne pas encore l'utilisation demandée pour deux raisons : premièrement, le système étant à temps discret, les résultats des 					opérations sont toujours arrondies à l'entier le plus proche ce qui crée des imprécisions. Ensuite, le facteur d'erreur est limité par les 					contraintes logiques des tâches ($wcet \ge 1$, $wcet \le deadline$, etc).\\
 
-On effectue donc une troisième étape dans laquelle on va, jusqu'à obtenir une utilisation acceptable, sélectionner une tâche au hasard et faire varier son wcet ou sa période de 1 pour faire augmenter ou diminuer son utilisation (en fonction de ce qui est nécessaire).\\
+		On effectue donc une troisième étape dans laquelle on va, jusqu'à obtenir une utilisation acceptable, sélectionner une tâche au hasard et faire 			varier son wcet ou sa période de 1 pour faire augmenter ou diminuer son utilisation (en fonction de ce qui est nécessaire).\\
 
-Ce système nous semble générer des systèmes assez variés en un temps raisonnable.
+		Ce système nous semble générer des systèmes assez variés en un temps raisonnable.
 
-\subsection{Structures de données}
-Il a été choisi d'utiliser la structure $deque$\footnote{\url{http://www.cplusplus.com/reference/deque/deque/}} de la STL pour le stockage des tâches (\verb?tasks?), des travaux actifs, donc entrés dans le système et dont la deadline n'est pas dépassée (\verb?jobs?) et pour les différents coeurs (\verb?CPUs?, qui contient des pointeurs vers des éléments de \verb?jobs?).\\
+	\subsection{Structures de données}
+		Il a été choisi d'utiliser la structure $deque$\footnote{\url{http://www.cplusplus.com/reference/deque/deque/}} de la STL pour le stockage des 				tâches (\verb?tasks?), des travaux actifs, donc entrés dans le système et dont la deadline n'est pas dépassée (\verb?jobs?) et pour les différents 			cœurs (\verb?CPUs?, qui contient des pointeurs vers des éléments de \verb?jobs?).\\
 
-Les travaux actifs sont également référencés par deux files à priorité de pointeurs vers des travaux : la file \verb?Running?, contenant les travaux en cours de calcul par un des coeurs (dont l'élément le plus prioritaire est le travail avec la plus $faible$ priorité), et la file \verb?Ready?, contenant tous les autres travaux actifs (dont l'élément le plus prioritaire est le travail avec la plus $grande$ priorité).\\
+		Les travaux actifs sont également référencés par deux files à priorité de pointeurs vers des travaux : la file \verb?Running?, contenant les 				travaux en cours de calcul par un des cœurs (dont l'élément le plus prioritaire est le travail avec la plus $faible$ priorité), et la file 					\verb?Ready?, contenant tous les autres travaux actifs (dont l'élément le plus prioritaire est le travail avec la plus $grande$ priorité).\\
 
-On notera qu'il existe deux structures de pointeurs vers les travaux en cours de calcul : la file \verb?Running? et la deque \verb?CPUs?. Ceci est dû au fait qu'une file à priorité ne permet pas facilement d'accéder à l'entierté des éléments ou de différencier les différents coeurs (pour le compteur de migration).
+		On notera qu'il existe deux structures de pointeurs vers les travaux en cours de calcul : la file \verb?Running? et la deque \verb?CPUs?. Ceci est 			dû au fait qu'une file à priorité ne permet pas facilement d'accéder à l'entierté des éléments ou de différencier les différents cœurs (pour le 			compteur de migration).
+		
+		
+	\subsection{Implémentation de EDF-k}
+		Après avoir chargé le système (passé en paramètres ou lu sur un fichier), on calcule le nombre minimale de cœur et le nombre de tâches 					prioritaires avec la formule : $ m_{min}(T) = \min_{k=1}^n \{  (k-1) + \lceil \frac{U^{(T^{(k+1)})}}{1- U(T_k)}  \rceil \} $.\\
+		~\\
+		On lance ensuite un simulateur global EDF qu'on a légèrement adapté pour qu'il puisse gérer les jobs prioritaires (\hyperlink{prioriteEDFk}{c.f. chap 3.2} ).\\
+		Ainsi quelque soit l'état du système ceux-ci passeront devant les autres jobs et ils auront l'impression d'avoir un processeur chacun.
+		
+		
+	\subsection{Implémentation de global EDF}
+		Après avoir chargé le système (passé en paramètres ou lu sur un fichier), on calcule le nombre minimale de cœur avec la formule : $ m_{min} =\lceil 		U_{globale} \rceil$.\\
+		~\\
+		On lance ensuite le simulateur global EDF. C'est le même que pour EDF-k, mais tous les jobs ayant la même priorité (nulle), celui-ci se comporte alors en "pure" global EDF.
 
-\subsection{Boucle principale}
-Voici une version simplifiée de notre boucle principale :
-\fontfamily{pcr}
-\begin{lstlisting}
+	\subsection{Implémentation du simulateur}
+		Voici une version simplifiée de la boucle principale de notre simulateur :
+		\fontfamily{pcr}
+		\begin{lstlisting}
 while (_t < studyInterval) {
 	generateNewJobs(_t);
 	// scheduling : assign which jobs goes to which CPUs
 	while (not _readyJobs.empty()
-		and (availableCPUs or JobNeedToBePreempted() )) {
-		// The earliest-deadline active job should get a CPU
+	and (availableCPUs or JobNeedToBePreempted() )) {
+	// The earliest-deadline active job should get a CPU
 		if (availableCPUs)
 		{
 			Job* newJob = _readyJobs.pop();
@@ -100,15 +134,14 @@ while (_t < studyInterval) {
 			if (_CPUs[i]->getLastCPU_Id() != (int) i)
 				++migration_counter;
 			_CPUs[i]->giveCPU(_deltaT, i);
-
+			
 			// check if a job is done
 			if (_CPUs[i]->getComputationLeft() == 0)
 				_CPUs[i] = NULL;
-		else
-			++idle_time_counter;
+			else
+				++idle_time_counter;
 		}
 	}
-
 	// advance time
 	_t += _deltaT;
 	cleanAndCheckJobs(_t);
@@ -116,29 +149,121 @@ while (_t < studyInterval) {
 \end{lstlisting}
 \fontfamily{}
 
-\subsection{Récoltes de statistiques}
+		\paragraph*{Récoltes de statistiques}~\\
+			Notre simulateur renvoi le nombre de préemptions, d'instants oisifs et de migrations apparues au cours de la simulation.
+		
+		%Nous avons récoltés les données suivantes :
 
-Nous avons récoltés les données suivantes :
-
-\begin{description}
- \item[Préemption :] Un coeur change de travail alors que le précédent n'était pas terminé.
- \item[Migration :] Un travail reprend son exécution sur un coeur différent du précédent.
- \item[Instant oisif :] Un coeur n'a pas de travail pour cet instant. Si plusieurs coeurs sont oisifs on augmente le compte de ce nombre de coeurs.
- \item[Nombres de coeurs :] Le nombre de coeurs que le simulateur a prévu pour le système, même si certains n'ont jamais été utilisés.
-\end{description}
-
+		%\begin{description}
+		 %\item[Préemption :] Un cœur change de travail alors que le précédent n'était pas terminé.
+		 %\item[Migration :] Un travail reprend son exécution sur un cœur différent du précédent.
+		 %\item[Instant oisif :] Un cœur n'a pas de travail pour cet instant. Si plusieurs cœurs sont oisifs on augmente le compte de ce nombre de cœurs.
+		 %\item[Nombres de cœurs :] Le nombre de cœurs que le simulateur a prévu pour le système, même si certains n'ont jamais été utilisés.
+		%\end{description}
+	
+	\subsection{Implémentation du comparateur}
+		Nous avons crée un comparateur lançant deux types de comparaisons, en fonction de ces paramètres.
+		\begin{enumerate}
+			\item ./globalEDFvsEDF-k -u $utilisationVoulue$ -n $nombreDeCœur$ -t $nombreDeTestes$\\
+					On compare alors EDF-k et global EDF pour le système correspondant.\\
+					On lance donc successivement TaskGenerator puis simGlobalEDF et simEDF-k, mais sans passer par des fichiers textes, ils se passent le système et les différents paramètres directement.
+			\item ./globalEDFvsEDF-k\\
+					On compare ici EDF-k et global EDF pour différentes valeurs d'utilisation et de nombre de tâches à des fins de statistiques.\\
+					On essaye des utilisations de (30-50-70-90-110-130-150) pour des systèmes de (5-10-15-20) tâches.\\
+					Le résultat est affiché et stocké dans un fichier "statistics.txt"
+		\end{enumerate}
+		
+		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%	diificultés rencontrées
+%%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Difficultés rencontrées}
-\subsection{Intervalle d'étude}
 
-Les périodes des tâches sont générées aléatoirement. Hors, elles vont avoir une très grande influence sur l'intervalle d'étude du simulateur vu que celui-ci est égal à $PPCM(T_i)+ max(O_i)$. Des périodes tirées aléatoirement peuvent très vite rendre le PPCM relativement grand, jusqu'au point où le temps de calcul devient inacceptable.
+	\subsection{Intervalle d'étude}
 
-Ce problème a été réglé en donnant 19 valeurs de période possibles (dont le PPCM est connu et acceptable) et en choisissant pour chaque tâche une de ses valeurs.\\
+		Les périodes des tâches sont générées aléatoirement. Hors, elles vont avoir une très grande influence sur l'intervalle d'étude du simulateur vu que 		celui-ci est égal à $PPCM(T_i)+ max(O_i)$. Des périodes tirées aléatoirement peuvent très vite rendre le PPCM relativement grand, jusqu'au point où 		le temps de calcul devient inacceptable.
 
-Les valeurs choisies sont : {2, 3, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 28, 30, 32}, leur PPCM est 554400.
+		Ce problème a été réglé en donnant 19 valeurs de période possibles (dont le PPCM est connu et acceptable) et en choisissant pour chaque tâche une 			de ses valeurs.\\
 
-\subsection{Priorité en EDF-k}
+		Les valeurs choisies sont : {2, 3, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 28, 30, 32}, leur PPCM est 554400.
 
-?? ça je te laisse Pierre 
+	\subsection{Priorité en EDF-k}\hypertarget{prioriteEDFk}{}
 
+		La principale difficulté de EDF-k est la gestion des tâches prioritaires.\\
+		La méthode vu en cour consistait à mettre les deadlines de ces tâches à $- \infty$. mais notre implémentation du simulateur utilise fréquemment ces deadlines pour divers calculs (tester l'ordonnancabilité du système, ...) et la gestion de deadline à $- \infty$ aurait trop complexifié notre code.\\
+		~\\
+		Il nous a donc semblé plus simple de rajouter un paramètre booléen "priority" aux tâches (et donc à leurs jobs), ainsi on ne doit se préoccuper de la priorité qu'à deux endroits :
+		\begin{enumerate}
+			\item Lors du tri des priority\_queue ready et running, en modifiant le comparateur EDFcomp pour que les jobs prioritaires arrivent au sommet de ready (ainsi ils sont toujours exécuté en premier) et en bas de running (ainsi on regarde prioritairement les autres jobs en cas de préemption).\\
+			\item Lors du choix des jobs a préempter, on utilise la méthode "JobNeedToBePreempted()" qui regarde les sommets de ready et running pour définir si une préemption est nécessaire.\\
+				S'il y a des jobs prioritaires, ils sont alors privilégiés (ont leur attribue un cœur ou les laisse terminer leur job), sinon on se base sur les deadlines.
+		\end{enumerate}
+		Ainsi le système peut fonctionner avec des jobs prioritaires, ou sans jobs prioritaire, devenant alors un simulateur global EDF.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%	Résultat
+%%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Résultats}
+
+ 	En se basant sur notre comparateur, on peut déjà analyser assez finement les différences entre global EDF et EDF-k.\\
+ 	Mais on ne prend pas en compte le nombre de système non-ordonnancable rencontré par le comparateur, normalement EDF-k ordonnance beaucoup moins de systèmes que global EDF, mais cela n'est pas analysé ici.
+	
+	\paragraph*{Nombre de cœurs}~\\
+		Quelque soit le nombre de tâches, jusqu'à une utilisation de 70, ils utilisent tout deux un seul cœur.
+		Mais passez ce cap, en moyenne global EDF commence à utiliser de plus en plus de cœurs tandis que EDF-k reste stable.\\
+		~\\
+		EDF-k est donc plus intéressant pour des système avec une plus grosse utilisation.
+		
+	\paragraph*{Nombre de préemptions et migrations}~\\
+		Quelque soit l'utilisation et le nombre de tâches, EDF-k nécessite en moyenne plus de préemptions, mais moins (voir pas) de migrations que global EDF.
+		
+	\paragraph*{Nombre d'instants oisifs}~\\
+		Quelque soit l'utilisation et le nombre de tâches, EDF-k et global EDF ont peu ou prou le même nombre d'instants oisifs.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%
+%%	Appendice
+%%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Appendice}
+	
+	\subsection{Output des programmes}
+		\begin{figure}[H] \hspace*{-2cm} 
+    	\centering
+   		  \includegraphics[width=200pt]{output1.png} 
+			%\caption{titre}
+			%\label{image-label}
+	  	\end{figure}
+	  	
+	 \subsection{Diagramme du programme}
+		\begin{figure}[H] \hspace*{-2cm} 
+    	\centering
+   		  \includegraphics[width=250pt]{DiagUML.jpeg} 
+			%\caption{titre}
+			%\label{image-label}
+	  	\end{figure}
+	  	
+	 \subsection{Statistiques du comparateur}
+		\begin{figure}[H] \hspace*{-2cm} 
+    	\centering
+   		  \includegraphics[width=200pt]{stat.png} 
+			%\caption{titre}
+			%\label{image-label}
+	  	\end{figure}	
+
+
+	
+
 \end{document}          

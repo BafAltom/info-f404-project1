@@ -72,7 +72,7 @@ void GlobalEDFvsEDFk::makeStats()
 	cout << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 	outfile << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 		
-	for(int utilisation = 30; utilisation <= 160 ; utilisation+= 20)
+	for(int utilisation = 30; utilisation <= 150 ; utilisation+= 20)
 	{
 		cout<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
 		outfile<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
@@ -145,8 +145,8 @@ void GlobalEDFvsEDFk::makeStats()
 /**
 * \details	Run globalEDFvsEDFk
 * 				can be launched with :
-* 					./globalEDFvsEDFk -u 120 -n 8 -t 100 (create the statistics for 8 tasks with an utilization of 100)
-* 					./globalEDFvsEDFk (create statistics for a utilisation from 30 to 160 and a number of task from 5 to 20)
+* 					./globalEDFvsEDF-k -u 120 -n 8 -t 100 (create the statistics for 8 tasks with an utilization of 120 and with 100 test systems)
+* 					./globalEDFvsEDF-k (create statistics for a utilisation from 30 to 160 and a number of task from 5 to 20)
 */
 int main(int argc, char** argv)
 {

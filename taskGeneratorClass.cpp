@@ -114,9 +114,9 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		tasks[i].reComputeUtilisation();
 	}
 
-	int delta = abs(utPerc - systemUtilization(tasks));
+	/*int delta = abs(utPerc - systemUtilization(tasks));
 
-	/*cout << "best utilization I could do : " << systemUtilization(tasks);
+	cout << "best utilization I could do : " << systemUtilization(tasks);
 	if (delta > 0)
 		cout << " (and not " << utPerc << ")";
 	cout << endl;
