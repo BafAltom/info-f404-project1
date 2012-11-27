@@ -217,25 +217,25 @@ while (_t < studyInterval) {
  	En se basant sur notre comparateur, on peut déjà analyser assez finement les différences entre global EDF et EDF-k.\\
 	
 	\paragraph*{Nombre de cœurs}~\\
-		Quelque soit le nombre de tâches, jusqu'à une utilisation de 70, ils utilisent touss deux un seul cœur.
-		Mais passez ce cap, en moyenne global EDF commence à utiliser de plus en plus de cœurs tandis que EDF-k reste stable.\\
-		~\\
-		EDF-k est donc plus intéressant pour des système avec une plus grosse utilisation.
+		%Quelque soit le nombre de tâches, jusqu'à une utilisation de 70, ils utilisent touss deux un seul cœur.
+		%Mais passez ce cap, en moyenne global EDF commence à utiliser de plus en plus de cœurs tandis que EDF-k reste stable.\\
+		%~\\
+		%EDF-k est donc plus intéressant pour des système avec une plus grosse utilisation.
 		
 	\paragraph*{Nombre de préemptions et migrations}~\\
 
-		Quelque soit l'utilisation et le nombre de tâches, EDF-k nécessite en moyenne plus de préemptions, mais moins (voir pas) de migrations que global EDF.\\
-		Mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
+		%Quelque soit l'utilisation et le nombre de tâches, EDF-k nécessite en moyenne plus de préemptions, mais moins (voir pas) de migrations que global EDF.\\
+		%Mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
 		
 	\paragraph*{Intervalles d'étude}~\\
-		Pour de petites utilisations, les intervalles d'études sont assez proches, mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
+		%Pour de petites utilisations, les intervalles d'études sont assez proches, mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
 		
 
 	\paragraph*{Nombre d'instants oisifs}~\\
-		Quelque soit l'utilisation et le nombre de tâches, EDF-k et global EDF ont peu ou prou le même nombre d'instants oisifs.
+		%Quelque soit l'utilisation et le nombre de tâches, EDF-k et global EDF ont peu ou prou le même nombre d'instants oisifs.
 		
 	\paragraph*{Nombre de systèmes ordonnancés}~\\
-		Quelque soit l'utilisation et le nombre de tâches, global EDF ordonnance plus de systèmes qu'EDF-k.
+		%Quelque soit l'utilisation et le nombre de tâches, global EDF ordonnance plus de systèmes qu'EDF-k.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -268,13 +268,6 @@ while (_t < studyInterval) {
 	  	
 	  
 	 \subsection{Statistiques du comparateur}
-		\begin{figure}[H] \hspace*{-2cm} 
-    	\centering
-   		  \includegraphics[width=300pt]{stat2.png} 
-			%\caption{titre}
-			%\label{image-label}
-	  	\end{figure}
-
 
 		Les résultats sont affichés sous la forme (résultat pour global EDF/ résultat pour EDF-k)\\
 		Ces statistiques sont générée en produisant (ou en essayant de produire) 50 systèmes respectant les paramètres correspondants.\\
@@ -286,78 +279,51 @@ while (_t < studyInterval) {
 
 \leftskip -2cm
 {
-	  	\paragraph*{Utilisation de 30}~\\
-	  	\begin{tabular}{|c|c|c|c|c|} \hline
-	  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
-Average number of preemption & 	 	(139.071/96.3214)& 	(-1/-1)	 & 	(-1/-1)	 & 	(-1/-1) \\ \hline
-Average number of migration & 		(0/0)	 	 & 	(-1/-1)	 & 	(-1/-1)	 & 	(-1/-1) \\ \hline
-Average idle time  & 			(562.964/562.964)& 	(-1/-1)	 & 	(-1/-1)	 & 	(-1/-1) \\ \hline
-Average study interval  & 		(8723.57/8723.57)& 	(-1/-1)	 & 	(-1/-1)	 & 	(-1/-1) \\ \hline
-Average number of Core used &  	 	(1/1)	 	 & 	(-1/-1)	& 	(-1/-1)	 & 	(-1/-1) \\ \hline
-Number of systems scheduled &  	 	(28/28)sur 28	 & 	(0/0)sur 0& 	(0/0)sur 0& 	(0/0)sur 0 \\ \hline
-\end{tabular}
 
 \paragraph*{Utilisation de 50}~\\
-	  	\begin{tabular}{|c|c|c|c|c|} \hline
-	  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
-Average number of preemption  & 	 	(299.882/254.545) & 	(132.8/1102.8)	  & 	(-1/-1)	  & 	(-1/-1)\\ \hline
-Average number of migration  & 		(0/0)	 	  & 	(0/0)	          & 	(-1/-1)	  & 	(-1/-1)\\ \hline
-Average idle time   & 			(1927.38/1722.61) & 	(515.4/515.4)     & 	(-1/-1)	 & 	(-1/-1)\\ \hline
-Average study interval   & 		(11744.3/11081.5) & 	(44261.8/44261.8) & 	(-1/-1)	  &	(-1/-1)\\ \hline
-Average number of Core used  &  	 	(1/1)	 	  & 	(1/1)	      	  & 	(-1/-1)	  & 	(-1/-1)\\ \hline
-number of systems scheduled  &  	 	(34/33)sur 34	  & 	(10/10)sur 10  	  & 	(0/0)sur 0 & 	(0/0)sur 0\\ \hline
+	\begin{tabular}{|c|c|c|c|c|} \hline
+		  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
+Average number of preemption & 	 	(59.9231/62.1282)& 	(27/27)	& 	(-1/-1)	 & 	(-1/-1)\\ \hline
+Average number of migration&		(0/0)	 	 & 	(0/0)	 & 	(-1/-1)	 & 	(-1/-1)\\ \hline
+Average idle time  & 			(3883.62/3883.62)&	(48812.3/48812.3)	 & 	(-1/-1)	 & 	(-1/-1)\\ \hline
+Average study interval & 	(5787.23/5787.23)	 & 	(71778.3/71778.3)	 & 	(-1/-1)	& 	(-1/-1)\\ \hline
+Average number of Core used & 	 	(1/1)	 	& 	(1/1)	& 	(-1/-1)	 & 	(-1/-1)\\ \hline
+Average number of Core necessary & 	 	(1/1)	 & 	(1/1)	 & 	(-1/-1)	 & 	(-1/-1)\\ \hline
+Number of systems scheduled & 	 	(39/39)sur 39	 & 	(3/3)sur 3& 	(0/0)sur 0	 & 	(0/0)sur 0\\ \hline
 \end{tabular}
-\paragraph*{Utilisation de 70}~\\
-	  	\begin{tabular}{|c|c|c|c|c|} \hline
-	  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
-Average number of preemption & 	 	(250.652/236.844)& 	(2316.55/485.938)& 	(3584/3584)    & 	(-1/-1)\\ \hline
-Average number of migration&		(0/0)	 	& 	(0/0)	 	& 	(0/0)	       & 	(-1/-1)\\ \hline
-Average idle time  &			(2740.46/2747.87)&	(5325.5/1503.44) & 	(6930/6930)    & 	(-1/-1)\\ \hline
-Average study interval & 		(10729/10747)	 & 	(92713.6/37148.6)& 	(665299/665299)& 	(-1/-1)\\ \hline
-Average number of Core used &  	 	(1/1)	 	 & 	(1/1)	 	& 	(1/1)	      & 	(-1/-1)\\ \hline
-number of systems scheduled &  	 	(46/45)sur 46	 & 	(22/16)sur 22	 &	(2/2)sur 2      & 	(0/0)sur 0\\ \hline
-\end{tabular}
-\paragraph*{Utilisation de 90}~\\
-	  	\begin{tabular}{|c|c|c|c|c|} \hline
-	  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
-Average number of preemption & 	 	(290.735/254.255)	& 	(1558.19/5303.62)& 	(2793.67/17722)	 & 	(-1/-1)\\ \hline
-Average number of migration & 		(0.857143/0)	 	 & 	(154.857/0)	&	(1414.67/0)	& 	(-1/-1)\\ \hline
-Average idle time  &			(4056.86/4162.34)	 & 	(30420.1/30420)	 & 	(41400.7/61777)	& 	(-1/-1)\\ \hline
-Average study interval &		(8843.27/9055.47)	 & 	(148017/148017)	 &	(464258/693018)	 & 	(-1/-1)\\ \hline
-Average number of Core used &  	 	(1.18367/1)	 	&	(1.52381/1)	 & 	(1.33333/1)	 & 	(-1/-1)\\ \hline
-number of systems scheduled &  	 	(49/47)sur 49	 	& 	(21/21)sur 22	& 	(3/2)sur 3	& 	(0/0)sur 0\\ \hline
-\end{tabular}
-\paragraph*{Utilisation de 110}~\\
-	  	\begin{tabular}{|c|c|c|c|c|} \hline
-	  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
-Average number of preemption &	 	(134.9/147.439)	 	 & 	(1555.37/3701.29)& 	(3028.36/19065.4)& 	(18/179)\\ \hline
-Average number of migration & 		(4.12/0)	 	 & 	(253.086/0)	& 	(1611.36/0)	& 	(12/0)\\ \hline
-Average idle time &			(1952.3/2021.07)	 & 	(20079/20562.1)	& 	(56705.6/63785.1)&	(336.5/336.5)\\ \hline
-Average study interval &		(4085.9/4435.85)	 & 	(82489.4/89385)	 & 	(379973/415578)	& 	(564499/564499)\\ \hline
-Average number of Core used & 	 	(1.58/1)	 	 & 	(1.74286/1)	 & 	(2/1)	 	& 	(2/1)\\ \hline
-number of systems scheduled &  	 	(50/41)sur 50	 	&	(35/28)sur 35	& 	(14/12)sur 14	&	(2/2)sur 2\\ \hline
-\end{tabular}
-\paragraph*{Utilisation de 130}~\\
-	  	\begin{tabular}{|c|c|c|c|c|} \hline
-	  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
-Average number of preemption&	 	(67.1/265.4)   	&	(1336.77/5378.79)& 	(4484.7/15784.7) & 	(19781.2/12188)\\ \hline
-Average number of migration & 		(33.62/0)      & 	(660.977/0)	 & 	(2783.05/0)	 & 	(8184.5/0)\\ \hline
-Average idle time  & 			(4155.7/3317.4)	 & 	(22398.9/25310.2)& 	(63951.4/42576.7)&	(51123/44422)\\ \hline
-Average study interval  & 		(6630.68/5948.14)& 	(64000.1/74866.3)& 	(252421/252910)	 &	(413299/221779)\\ \hline
-Average number of Core used & 	 	(2/1)	 	 & 	(2/1)		 & 	(2/1)	 	 & 	(2/1)\\ \hline
-number of systems scheduled & 	 	(50/35)sur 50	& 	(44/33)sur 44	& 	(20/14)sur 20	 & 	(4/1)sur 4\\ \hline
+\paragraph*{Utilisation de 100}~\\
+	\begin{tabular}{|c|c|c|c|c|} \hline
+		  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
+Average number of preemption & 	 	(189.041/160.271)	 	& 	(3648.48/2904.5)	& 	(3821.73/8191.2)	 & 	(-1/-1)\\ \hline
+Average number of migration & 		(1.18367/0.708333)	 	 & 	(710.522/816.667)	& 	(1492.91/1327.6)	& 	(-1/-1)\\ \hline
+Average idle time  &			(1791.76/1853.6)	 & 	(193438/203715)	 & 	(411227/451745)	 &	(-1/-1)\\ \hline
+Average study interval & 	(3953.63/3815.69)	 & 	(158312/159417)	& 	(414541/400554)	 & 	(-1/-1)\\ \hline
+Average number of Core used & 	 	(1.42857/1.5)	 	 & 	(1.69565/1.79167)	 & 	(1.81818/1.9)	 & 	(-1/-1)\\ \hline
+Average number of Core necessary&  	 	(1.40816/1.47917)	 	& 	(1.69565/1.79167)	&	(1.81818/1.9)	 & 	(-1/-1)\\ \hline
+Number of systems scheduled& 	 	(49/48)sur 49	 	& 	(23/24)sur 24	& 	(11/10)sur 11	 & 	(0/0)sur 0\\ \hline
 \end{tabular}
 \paragraph*{Utilisation de 150}~\\
 	\begin{tabular}{|c|c|c|c|c|} \hline
-	  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
-Average number of preemption & 	 	(317.18/44.5)	& 	(3663.46/1649.63)& 	(5745.63/11241)	 &	(11845.7/727)\\ \hline
-Average number of migration & 		(177.2/0)	& 	(1893.92/0)	 & 	(2808.67/0)	& 	(6541.78/0)\\ \hline
-Average idle time  & 			(10262.2/555.25) & 	(49392.2/19220.1)& 	(58701.3/30494.5)& 	(89861.8/2650.33)\\ \hline
-Average study interval  & 		(9648.22/1171.94)& 	(75048.2/45472.4)& 	(188352/137602)	 & 	(537992/50418.7)\\ \hline
-Average number of Core used &  	 	(2/1)	 	 & 	(2/1)		& 	(2/1)	 	& 	(2/1)\\ \hline
-number of systems scheduled & 	 	(50/16)sur 50	& 	(48/27)sur 48	&	(27/17)sur 27	&	(9/3)sur 9	\\ \hline
+		  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
+Average number of preemption&	 	(264.44/167.735)	 	 &	(4239.54/899.63)	&	(11553.1/8129.87)	 & 	(12206/2044)\\ \hline
+Average number of migration & 		(175.32/106.265)	 	& 	(1999.98/460.783)	 & 	(5584.04/2967.83)	& 	(6035.5/1579.33)\\ \hline
+Average idle time  &			(9653.8/10808.4)	& 	(87089.4/100436)	 & 	(263831/448749)	& 	(310073/314085)\\ \hline
+Average study interval  &	(13116.4/12478.7)	 & 	(93994.7/73871.9)	& 	(276830/287663)	 & 	(400698/164659)\\ \hline
+Average number of Core used &  	 	(2/2.28571)	 	 & 	(2/2.47826)	 & 	(2/2.78261)	 & 	(2/3)\\ \hline
+Average number of Core necessary &	 	(1.92/2.08163)	 	 & 	(2/2.45652)	 & 	(2/2.73913)	& 	(2/3)\\ \hline
+Number of systems scheduled &  	 	(50/49)sur 50	 	& 	(48/46)sur 48	 & 	(26/23)sur 26	&	(4/3)on 4\\ \hline
 \end{tabular}
-}
-	
+\paragraph*{Utilisation de 200}~\\
+	\begin{tabular}{|c|c|c|c|c|} \hline
+		  	 &	 	 5 tasks 	 &  10 tasks 	  &   15 tasks 	 &   20 tasks 	\\ \hline
+Average number of preemption& 	 	(235.744/37.9565)	 	 & 	(2513.02/332.98)	 & 	(16853.8/4168.02)	 & 	(13711.4/6131.28)\\ \hline
+Average number of migration & 		(105.233/26.2174)	 	&	(1471.6/203.592)	&	(9071.81/2645)	 & 	(7561/3534.72)\\ \hline
+Average idle time  &			(3834.4/17427.1)	& 	(35433.4/63629.3)	 & 	(318775/478492)	 & 	(591950/802179)\\ \hline
+Average study interval  &	(6460.56/13205.2)	 & 	(40400.6/35567.6)	&(273696/253813)	 & 	(387086/387086)\\ \hline
+Average number of Core used & 	 	(2.02326/2.93478)	 	 & 	(2.4/3.2449)	& 	(2.67442/3.33333)	 & 	(2.88/3.36)\\ \hline
+Average number of Core necessary & 	 	(1.97674/2.69565)	 	 &	(2.4/3.18367)	 & 	(2.67442/3.2619)	 & 	(2.88/3.36)\\ \hline
+Number of systems scheduled & 	 	(43/46)sur 50	 	& 	(50/49)sur 50	 &	(43/42)sur 43	 & 	(25/25)sur 25\\ \hline
+\end{tabular}
+
 
 \end{document}          
