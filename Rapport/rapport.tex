@@ -53,7 +53,7 @@ breaklines=true
 \section{Choix d'implémentation}
 
 	\subsection{Nature du simulateur}
-		Notre simulateur utilise un temps discret (comme vu en cours) et est à pas constant. Il simule le système passé en paramètre avec un nombre de cœur 		choisi par l'utilisateur, mais contient aussi une fonction permettant de calculer ce nombre. La simulation durera le temps maximal nécessaire pour 			effectuer une période complète ($2*PPCM(T_i) + max(O_i)$).
+		Notre simulateur utilise un temps discret (comme vu en cours) et est à pas constant. Il simule le système passé en paramètre avec un nombre de cœur choisi par l'utilisateur, mais contient aussi une fonction permettant de calculer ce nombre (qui est toujours utilisée par nos programmes). La simulation durera le temps maximal nécessaire pour 			effectuer une période complète ($2*PPCM(T_i) + max(O_i)$).
 
 	\subsection{Nature du système}
 		Comme demandé par l'énoncé, le simulateur accepte des systèmes périodiques à départ différé et à échéance contrainte. Il ne vérifie pas la 					faisabilité du système avant de commencer, mais s'arrête dés qu'un travail manque son échéance.\\
