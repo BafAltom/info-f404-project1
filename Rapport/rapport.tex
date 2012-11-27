@@ -6,13 +6,10 @@
 \usepackage{color}
 \usepackage{verbatim}
 \definecolor{grey}{rgb}{0.9,0.9,0.9}
-\usepackage{boites}
 \usepackage{float}
-\usepackage{chngpage}
-\usepackage{wrapfig}
 \usepackage{graphicx}
-\usepackage{fancyhdr}
-\pagestyle{fancy} % voir si laisse ce style ou pas ?
+%\usepackage{fancyhdr}
+%\pagestyle{fancy} % voir si laisse ce style ou pas ?
 \lstset{
 language=C++,
 basicstyle=\footnotesize\fontfamily{pcr},
@@ -221,22 +218,36 @@ while (_t < studyInterval) {
 		%Mais passez ce cap, en moyenne global EDF commence à utiliser de plus en plus de cœurs tandis que EDF-k reste stable.\\
 		%~\\
 		%EDF-k est donc plus intéressant pour des système avec une plus grosse utilisation.
+		Jusqu'à une utilisation de 100, EDF-k et global EDF utilisent peu ou prou le même nombre de cœurs.\\
+		A partir d'une utilisation de 150, EDF commence à nécessiter plus de cœurs que global EDF.\\
+		~\\
+		Parallèlement à cela, plus on a de tâches et plus le nombre de CPU utilisé est important par rapport au nombre de CPU vraiment nécessaire.
 		
 	\paragraph*{Nombre de préemptions et migrations}~\\
 
 		%Quelque soit l'utilisation et le nombre de tâches, EDF-k nécessite en moyenne plus de préemptions, mais moins (voir pas) de migrations que global EDF.\\
 		%Mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
+		En règle générale global EDF nécessite plus de préemptions et migrations que EDF-k.\\
+		Et plus il y a de tâches, plus l'écart est grand.
 		
 	\paragraph*{Intervalles d'étude}~\\
-		%Pour de petites utilisations, les intervalles d'études sont assez proches, mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
+		Pour de petites utilisations, les intervalles d'études sont assez proches, mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
 		
 
 	\paragraph*{Nombre d'instants oisifs}~\\
 		%Quelque soit l'utilisation et le nombre de tâches, EDF-k et global EDF ont peu ou prou le même nombre d'instants oisifs.
+		Jusqu'à une utilisation de 100, EDF-k et global EDF ont peu ou prou le même nombre d'instants oisifs.\\
+		A partir d'une utilisation de 150, EDF-k commence à nécessiter plus d'instants oisifs que global EDF, sauf pour un faible nombre de tâches (5).\\
 		
 	\paragraph*{Nombre de systèmes ordonnancés}~\\
 		%Quelque soit l'utilisation et le nombre de tâches, global EDF ordonnance plus de systèmes qu'EDF-k.
-
+		global EDF et EDF-k ordonnancent plus ou moins le même nombre de tâche, mais global EDF est souvent légèrement plus efficace.\\
+		~\\
+		Par contre pour un petit nombre de tâches et pour des utilisations supérieures à 200, on voit que EDF-k ordonnance plus de systèmes que global EDF
+		
+	\paragraph*{Conclusion}~\\
+		EDF-k nous semble donc plus indiqué dans le cas de système avec peu de tâches (aux alentour de 5) et avec une forte utilisation (au-dessus de 200).\\
+		EDF-k ordonnance alors généralement plus de système et le fait avec moins d'instants oisifs mais utilise un petit peu plus de cœurs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -250,10 +261,10 @@ while (_t < studyInterval) {
 	
 	
 	  	
-	 \subsection{Diagramme du programme}
+	 \subsection{Diagramme de classe}
 		\begin{figure}[H] \hspace*{-2cm} 
     	\centering
-   		  \includegraphics[width=350pt]{DiagUML.jpeg} 
+   		  \includegraphics[width=500pt]{DiagUML.jpeg} 
 			%\caption{titre}
 			%\label{image-label}
 	  	\end{figure}
@@ -261,7 +272,7 @@ while (_t < studyInterval) {
 	 \subsection{Output des programmes}
 		\begin{figure}[H] \hspace*{-2cm} 
     	\centering
-   		  \includegraphics[width=250pt]{output4.png} 
+   		  \includegraphics[width=350pt]{output4.png} 
 			%\caption{titre}
 			%\label{image-label}
 	  	\end{figure}
