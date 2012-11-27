@@ -19,7 +19,7 @@ void GlobalEDFvsEDFk::makeStat(int numTasks, int utilisation, int numTesting)
 	int cnt=0;
 	while(cnt <= numTesting)
 	{
-		cout << "cnt : " << cnt << " / " << numTesting << endl;
+		//cout << "cnt : " << cnt << " / " << numTesting << endl;
 		// we generate the tasks
 		vector<Task> tasks = task_generator.generateTasks(utilisation, numTasks, 20);
 		deque<Task> t;
@@ -146,14 +146,7 @@ void GlobalEDFvsEDFk::makeStats()
 			statGlobalAverage.push_back(GlobalSchedulable);
 			statGlobalAverage.push_back(SystemSchedulable);
 			statEDFkAverage.push_back(EDFkSchedulable);
-			if(i==3)
-			{
-				NumberOftask = 5;
-			}
-			else
-			{
-				NumberOftask += 5;
-			}
+			NumberOftask += 5;
 			statGlobalFinale.push_back(statGlobalAverage);
 			statEDFkFinale.push_back(statEDFkAverage);	
 		}

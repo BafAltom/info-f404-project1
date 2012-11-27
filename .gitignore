@@ -1,7 +1,6 @@
 # executables
 main
 taskGenerator
-simEDFk
 simEDF-k
 simGlobalEDF
 globalEDFvsEDF-k
@@ -15,10 +14,7 @@ out*
 Rapport/*
 !Rapport/rapport.tex
 !Rapport/rapport.pdf
-!Rapport/stat.png
-!Rapport/output1.png
-!Rapport/stat2.png
-!Rapport/output3.png
+!Rapport/output4.png
 !Rapport/DiagUML.jpeg
 
 
