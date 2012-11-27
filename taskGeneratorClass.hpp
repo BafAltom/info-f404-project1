@@ -16,7 +16,6 @@ using namespace std;
 class taskGenerator {
 	
 public:
-	// GENERATORS CONSTANTS
 
 	static int MAX_OFFSET;
 	static int ACCEPTED_PERIODS[19];

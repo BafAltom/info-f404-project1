@@ -14,7 +14,7 @@ Task::Task(string parseString) : _offset(0), _period(0), _deadline(0), _wcet(0),
 {
 // This function does not check for correctness of input
 	istringstream ss(parseString);
-	string parsedStrings[5]; // 4 parameters + endline
+	string parsedStrings[5]; 
 	int counter = 0;
 	while (!ss.eof())
 	{
@@ -46,7 +46,7 @@ deque<Task> Task::generateFromString(string tasks_text)
 	{
 		string one_task_text;
 		getline(ss, one_task_text,'\n');
-		if (one_task_text.size() > 4) // empty lines
+		if (one_task_text.size() > 4)
 			tasks.push_back(Task(one_task_text));
 	}
 	return tasks;

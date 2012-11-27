@@ -51,11 +51,11 @@ private:
 	priority_queue<Job*, std::vector<Job*>, EDFComp<false> > _readyJobs;
 	priority_queue<Job*, std::vector<Job*>, EDFComp<true> > _runningJobs;
 
-	long preemption_counter; // an unfinished job leaves a CPU
-	long migration_counter; // a job which previously was on a CPU enters another CPU
+	long preemption_counter; 
+	long migration_counter; 
 	int number_of_core_used;
 	int number_of_core_necessary;
-	int idle_time_counter; // sum of the idle time count of each CPU (!= time steps where ALL CPUs were idle)
+	int idle_time_counter;
 };
 
 template<class T> int findInDeque(T t, deque<T> aDeque);

@@ -41,10 +41,6 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		tasks[i] = Task(offset, period, deadline, wcet);
 	}
 
-	/*cout << "Initial generation :" << endl;
-	for (unsigned int t = 0; t < tasks.size(); ++t)
-		cout << tasks[t].asString() << endl;*/
-
 
 	// modify all tasks to get closer to the utilization parameter
 	// This will not work exactly because of discrete time (and because each task must respect Ui < 100%)
@@ -61,11 +57,6 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		if (tasks[i].getWcet() > tasks[i].getPeriod())
 			tasks[i].setPeriod(tasks[i].getWcet());
 	}
-
-	//cout << "--------------------- after rescaling" << endl;
-
-	/*for (unsigned int t = 0; t < tasks.size(); ++t)
-		cout << tasks[t].asString() << "\t" << tasks[t].getUtilizationPercent() << endl;*/
 
 	// Try to get closer and closer to the desired utilization by small modifications
 	current_utiliz = systemUtilization(tasks);
@@ -85,7 +76,6 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		}
 		if (stuck)
 		{
-			//cout << "Dead end. Try again." << endl;
 			return (vector<Task>());
 		}
 
@@ -101,10 +91,6 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		current_utiliz = systemUtilization(tasks);
 		++loop_counter;
 
-		/*cout << "--------------------- step " << loop_counter << endl;
-		for (unsigned int t = 0; t < tasks.size(); ++t)
-			cout << tasks[t].asString() << "\tu: " << tasks[t].getUtilizationPercent() << endl;
-		cout << "Global Utilization : " << systemUtilization(tasks) << endl;*/
 	}
 
 	// explicit deadline
@@ -113,13 +99,5 @@ vector<Task> taskGenerator::generateTasks(int utPerc, int numT, int precision)
 		tasks[i].setDeadline(tasks[i].getPeriod());
 		tasks[i].reComputeUtilisation();
 	}
-
-	/*int delta = abs(utPerc - systemUtilization(tasks));
-
-	cout << "best utilization I could do : " << systemUtilization(tasks);
-	if (delta > 0)
-		cout << " (and not " << utPerc << ")";
-	cout << endl;
-	cout << "delta : " << delta << "\tprecision : " << precision << "\tloops : "<< loop_counter << endl;*/
 	return tasks;
 }

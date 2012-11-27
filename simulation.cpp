@@ -299,10 +299,9 @@ vector<int> Simulation::runGlobal()
 		}
 
 		generateNewJobs(_t);
-		//if (_t % 10000 == 0) cout << "t > " << _t << "\t/\t" << studyInterval << endl;
 		_readyJobs = getReadyJobs();
 		_runningJobs = getRunningJobs();
-		int firstIdleCPU = positionOfFirstIdleCPU(); // -1 if all CPUs 
+		int firstIdleCPU = positionOfFirstIdleCPU();
 		bool availableCPUs = (firstIdleCPU != -1);
 
 		// scheduling : assign which jobs goes to which CPUs
@@ -321,16 +320,6 @@ vector<int> Simulation::runGlobal()
 			}
 			else // all CPUs are busy, preempt the one with the latest deadline
 			{
-				/*if(_readyJobs.top()->getPriority()) // a virer si ok, juste des testes pour edfk
-				{
-					assert(_readyJobs.top()->getPriority());
-					assert(not _runningJobs.top()->getPriority());
-				}
-				else
-				{
-					assert(not _runningJobs.top()->getPriority());
-					assert(_runningJobs.top()->getAbsoluteDeadline() > _readyJobs.top()->getAbsoluteDeadline());
-				}*/
 				Job* oldJob = _runningJobs.top(); _runningJobs.pop();
 				Job* newJob = _readyJobs.top(); _readyJobs.pop();
 				int posOldJob = findInDeque<Job*>(oldJob, _CPUs);
@@ -343,11 +332,9 @@ vector<int> Simulation::runGlobal()
 				if (DEBUG) cout << "hi to\t" << newJob->asString() << "\tat CPU " << firstIdleCPU << endl;
 			}
 
-			// update variables (duplicate code...)
-			// + there should be a way to remove the refreshing of ready & running jobs
 			_readyJobs = getReadyJobs();
 			_runningJobs = getRunningJobs();
-			firstIdleCPU = positionOfFirstIdleCPU(); // -1 if all CPUs 
+			firstIdleCPU = positionOfFirstIdleCPU();
 			availableCPUs = (firstIdleCPU != -1);
 		}
 
