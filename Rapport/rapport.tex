@@ -8,8 +8,8 @@
 \definecolor{grey}{rgb}{0.9,0.9,0.9}
 \usepackage{float}
 \usepackage{graphicx}
-%\usepackage{fancyhdr}
-%\pagestyle{fancy} % voir si laisse ce style ou pas ?
+\usepackage{fancyhdr}
+\pagestyle{fancy} % voir si laisse ce style ou pas ?
 \lstset{
 language=C++,
 basicstyle=\footnotesize\fontfamily{pcr},
@@ -164,7 +164,7 @@ while (_t < studyInterval) {
 		Nous avons crée un comparateur lançant deux types de comparaisons, en fonction de ses paramètres.
 		\begin{enumerate}
 			\item \verb?./globalEDFvsEDF-k -u utilisationVoulue -n nombreDeCœur -t nombreDeTests?
-					On compare alors EDF-k et global EDF pour sur des systèmes correspondants.\\
+					On compare alors EDF-k et global EDF sur des systèmes correspondants.\\
 					On lance donc successivement \verb?TaskGenerator? puis \verb?simGlobalEDF? et \verb?simEDF-k?, mais sans passer par des fichiers textes, ils se passent le système et les différents paramètres directement.
 			\item \verb?./globalEDFvsEDF-k [sans parametres]?
 					On compare ici EDF-k et global EDF pour différentes valeurs d'utilisation et de nombre de tâches à des fins de statistiques.\\
@@ -287,9 +287,9 @@ while (_t < studyInterval) {
 		Ces statistiques sont générée en produisant (ou en essayant de produire) 50 systèmes respectant les paramètres correspondants.\\
 		Cependant il peut arriver que le générateur n'arrive pas à créer un système viable ou que le simulateur n'arrive pas à ordonnancer ce système.\\
 		C'est représenter par la ligne "Number of systems scheduled", dont les résultats ont la forme :\\
-		(nombre de système ordonnancer par global EDF / par EDF-k) sur le nombre de système créé par le générateur.\\
+		(nombre de système ordonnancé par global EDF / par EDF-k) sur le nombre de système créé par le générateur.\\
 		~\\
-		Si aucun système n'a été créer par le générateur ou n'est ordonnancable, alors les valeurs sont mises à -1.
+		Si aucun système n'a été créé par le générateur ou n'est ordonnancable, alors les valeurs sont mises à -1.
 
 \leftskip -2.5cm
 {
