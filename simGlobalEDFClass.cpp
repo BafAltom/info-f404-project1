@@ -59,6 +59,7 @@ void simGlobalEDF::run(char* file){
 		cout << "Number of migration = " << result.at(1) << endl;
 		cout << "idle time  = " << result.at(2) << endl;
 		cout << "Core used = " << _numberCPU << endl;
+		cout << "Core necessary = " << result.at(3) << endl;
 	}
 	else
 	{
@@ -70,10 +71,11 @@ void simGlobalEDF::run(char* file){
 /**
 * \details	Run global EDF from a deque of tasks and return the result.
 * \return 	A vector containing the statistics of the system
-* 				vector[0]= average number of preemption
-* 				vector[1]= average number of migration
-*				vector[2]= average idle time
-*				vector[3]= average number of core
+* 				vector[0]= number of preemption
+* 				vector[1]= number of migration
+*				vector[2]= idle time
+*				vector[3]= number of core necessary
+*				vector[4]= number of core used
 */
 vector<int> simGlobalEDF::run(deque<Task> t)
 {

@@ -11,6 +11,7 @@ Simulation::Simulation() :
 	preemption_counter(0),
 	migration_counter(0),
 	number_of_core_used(0),
+	number_of_core_necessary(0),
 	idle_time_counter(0)
 {	}
 
@@ -25,6 +26,7 @@ Simulation::Simulation(int nCPU, deque<Task> t) :
 	preemption_counter(0),
 	migration_counter(0),
 	number_of_core_used(0),
+	number_of_core_necessary(0),
 	idle_time_counter(0)
 {	}
 
@@ -247,20 +249,16 @@ int Simulation::findInCPUs(Job* j)
 */
 bool Simulation::JobNeedToBePreempted()
 {
-	if(_readyJobs.top()->getPriority() and not _runningJobs.top()->getPriority())
+	if(_readyJobs.top()->getPriority())
 	{
+		assert (not _runningJobs.top()->getPriority())
 		return true;
-	}	
-	else if(_readyJobs.top()->getPriority() and _runningJobs.top()->getPriority())
-	{
-		// Normally this should never happen
-		return false;
 	}
 	else if(_runningJobs.top()->getPriority())
 	{
 		return false;
 	}
-	else
+	else // pure Global EDF
 	{
 		return _readyJobs.top()->getAbsoluteDeadline() < _runningJobs.top()->getAbsoluteDeadline();
 	}
@@ -354,6 +352,7 @@ vector<int> Simulation::runGlobal()
 
 		// CPUs
 		if (DEBUG) cout << "CPUS" << endl;
+		int idle_cpus_count = 0;
 		for (unsigned int i = 0; i < _CPUs.size(); ++i)
 		{
 			if (DEBUG) cout << "\tCPU[" << i << "]: ";
@@ -376,10 +375,17 @@ vector<int> Simulation::runGlobal()
 					if (DEBUG) cout << "\tbye!";
 					_CPUs[i] = NULL;
 				}
+			}
 			else
+			{
+				++idle_cpus_count;
 				++idle_time_counter;
 			}
 			if (DEBUG) cout << endl;
+		}
+		if ((int)_CPUs.size() - idle_cpus_count > number_of_core_necessary)
+		{
+			number_of_core_necessary = _CPUs.size() - idle_cpus_count;
 		}
 
 		// advance time
@@ -394,6 +400,7 @@ vector<int> Simulation::runGlobal()
 		result.push_back(preemption_counter);
 		result.push_back(migration_counter);
 		result.push_back(idle_time_counter);
+		result.push_back(number_of_core_necessary);
 	}
 	return result;
 }

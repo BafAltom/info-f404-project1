@@ -130,6 +130,7 @@ void simEDFk::run(char* file)
 		cout << "Number of migration = " << result.at(1) << endl;
 		cout << "idle time  = " << result.at(2) << endl;
 		cout << "Core used = " << _numberCPU << endl;
+		cout << "Core actually used = " << result.at(3) << endl;
 	}
 	else
 	{
