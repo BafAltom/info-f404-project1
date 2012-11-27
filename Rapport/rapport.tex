@@ -86,10 +86,10 @@ breaklines=true
 		
 		
 	\subsection{Implémentation de EDF-k}
-		Après avoir chargé le système (passé en paramètres ou lu sur un fichier), on calcule le nombre minimale de cœur et le nombre de tâches 					prioritaires avec la formule : $ m_{min}(T) = \min_{k=1}^n \{  (k-1) + \lceil \frac{U^{(T^{(k+1)})}}{1- U(T_k)}  \rceil \} $.\\
+		Après avoir chargé le système (passé en paramètre ou lu sur un fichier), on calcule le nombre minimale de cœurs et le nombre de tâches prioritaires avec la formule : $ m_{min}(T) = \min_{k=1}^n \{  (k-1) + \lceil \frac{U^{(T^{(k+1)})}}{1- U(T_k)}  \rceil \} $.\\
 		~\\
 		On lance ensuite un simulateur global EDF qu'on a légèrement adapté pour qu'il puisse gérer les jobs prioritaires (\hyperlink{prioriteEDFk}{c.f. chap 3.2} ).\\
-		Ainsi quelque soit l'état du système ceux-ci passeront devant les autres jobs et ils auront l'impression d'avoir un processeur chacun.
+		Ainsi quel que soit l'état du système ceux-ci passeront devant les autres jobs et ils auront l'impression d'avoir un processeur chacun.
 		
 		
 	\subsection{Implémentation de global EDF}
@@ -149,7 +149,9 @@ while (_t < studyInterval) {
 \fontfamily{}
 
 		\paragraph*{Récoltes de statistiques}~\\
+
 			Notre simulateur renvoi l'intervalle d'étude, le nombre de préemptions, d'instants oisifs et de migrations apparues au cours de la simulation.
+
 		
 		%Nous avons récoltés les données suivantes :
 
@@ -163,8 +165,8 @@ while (_t < studyInterval) {
 	\subsection{Implémentation du comparateur}
 		Nous avons crée un comparateur lançant deux types de comparaisons, en fonction de ces paramètres.
 		\begin{enumerate}
-			\item ./globalEDFvsEDF-k -u $utilisationVoulue$ -n $nombreDeCœur$ -t $nombreDeTestes$\\
-					On compare alors EDF-k et global EDF pour le système correspondant.\\
+			\item ./globalEDFvsEDF-k -u $utilisationVoulue$ -n $nombreDeCœur$ -t $nombreDeTests$\\
+					On compare alors EDF-k et global EDF pour sur des systèmes correspondants.\\
 					On lance donc successivement TaskGenerator puis simGlobalEDF et simEDF-k, mais sans passer par des fichiers textes, ils se passent le système et les différents paramètres directement.
 			\item ./globalEDFvsEDF-k\\
 					On compare ici EDF-k et global EDF pour différentes valeurs d'utilisation et de nombre de tâches à des fins de statistiques.\\
@@ -193,7 +195,7 @@ while (_t < studyInterval) {
 	\subsection{Priorité en EDF-k}\hypertarget{prioriteEDFk}{}
 
 		La principale difficulté de EDF-k est la gestion des tâches prioritaires.\\
-		La méthode vu en cour consistait à mettre les deadlines de ces tâches à $- \infty$. mais notre implémentation du simulateur utilise fréquemment ces deadlines pour divers calculs (tester l'ordonnancabilité du système, ...) et la gestion de deadline à $- \infty$ aurait trop complexifié notre code.\\
+		La méthode vu en cours consistait à mettre les deadlines de ces tâches à $- \infty$. mais notre implémentation du simulateur utilise fréquemment ces deadlines pour divers calculs (tester l'ordonnancabilité du système, ...) et la gestion de deadline à $- \infty$ aurait rendu notre code trop complexe.\\
 		~\\
 		Il nous a donc semblé plus simple de rajouter un paramètre booléen "priority" aux tâches (et donc à leurs jobs), ainsi on ne doit se préoccuper de la priorité qu'à deux endroits :
 		\begin{enumerate}
@@ -221,12 +223,14 @@ while (_t < studyInterval) {
 		EDF-k est donc plus intéressant pour des système avec une plus grosse utilisation.
 		
 	\paragraph*{Nombre de préemptions et migrations}~\\
+
 		Quelque soit l'utilisation et le nombre de tâches, EDF-k nécessite en moyenne plus de préemptions, mais moins (voir pas) de migrations que global EDF.\\
 		Mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
 		
 	\paragraph*{Intervalles d'étude}~\\
 		Pour de petites utilisations, les intervalles d'études sont assez proches, mais pour de grandes utilisations (et nombre de tâches) on peut avoir des différences significatives, sans qu'une tendance ne se fasse jour.
 		
+
 	\paragraph*{Nombre d'instants oisifs}~\\
 		Quelque soit l'utilisation et le nombre de tâches, EDF-k et global EDF ont peu ou prou le même nombre d'instants oisifs.
 		

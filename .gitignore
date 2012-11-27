@@ -2,13 +2,16 @@
 main
 taskGenerator
 simEDFk
+simEDF-k
 simGlobalEDF
 globalEDFvsEDF-k
 
 #output files
 out*
 
-# pour plus tard ;-)
+#temp file
+*~
+
 Rapport/*
 !Rapport/rapport.tex
 !Rapport/rapport.pdf
