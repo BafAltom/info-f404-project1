@@ -77,7 +77,7 @@ void GlobalEDFvsEDFk::makeStats()
 	cout << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 	outfile << "statistics of the simulation : \t"<<" \t 5 tasks \t | "<<" 10 tasks \t  |  "<<" 15 tasks \t  |  "<<" 20 tasks \t"<<endl;
 		
-	for(int utilisation = 250; utilisation <= 400 ; utilisation+= 50)
+	for(int utilisation = 50; utilisation <= 400 ; utilisation+= 50)
 	{
 		cout<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
 		outfile<<"-----------------"<<endl<<"Utilisation of "<<utilisation<<endl;
