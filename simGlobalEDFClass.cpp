@@ -58,6 +58,7 @@ void simGlobalEDF::run(char* file){
 		cout << "Number of preemption = " << result.at(0) << endl;
 		cout << "Number of migration = " << result.at(1) << endl;
 		cout << "idle time  = " << result.at(2) << endl;
+		cout << "studyInterval  = " << result.at(3) << endl;
 		cout << "Core used = " << _numberCPU << endl;
 		cout << "Core necessary = " << result.at(3) << endl;
 	}
@@ -76,6 +77,7 @@ void simGlobalEDF::run(char* file){
 *				vector[2]= idle time
 *				vector[3]= number of core necessary
 *				vector[4]= number of core used
+**				vector[5]= studyInterval
 */
 vector<int> simGlobalEDF::run(deque<Task> t)
 {

@@ -116,6 +116,7 @@ void simEDFk::modifyPriority(){
 */
 void simEDFk::run(char* file)
 {
+	_numberCPU=0;
 	uploadTask(file);
 	computeCPUandK();
 	modifyPriority();
@@ -129,6 +130,7 @@ void simEDFk::run(char* file)
 		cout << "Number of preemption = " << result.at(0) << endl;
 		cout << "Number of migration = " << result.at(1) << endl;
 		cout << "idle time  = " << result.at(2) << endl;
+		cout << "studyInterval  = " << result.at(3) << endl;
 		cout << "Core used = " << _numberCPU << endl;
 		cout << "Core actually used = " << result.at(3) << endl;
 	}
@@ -145,10 +147,12 @@ void simEDFk::run(char* file)
 * 				vector[0]= average number of preemption
 * 				vector[1]= average number of migration
 *				vector[2]= average idle time
-*				vector[3]= average number of core
+*				vector[3]= studyInterval
+*				vector[4]= average number of core
 */
 vector<int> simEDFk::run(deque<Task> t)
 {
+	_numberCPU=0;
 	_initialTasks = t;
 	computeCPUandK();
 	modifyPriority();

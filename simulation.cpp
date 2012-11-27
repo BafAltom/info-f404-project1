@@ -271,6 +271,7 @@ bool Simulation::JobNeedToBePreempted()
 * 				vector[0]= average number of preemption
 * 				vector[1]= average number of migration
 *				vector[2]= average idle time
+*				vector[3]= studyInterval
 */
 vector<int> Simulation::runGlobal()  
 {
@@ -401,6 +402,7 @@ vector<int> Simulation::runGlobal()
 		result.push_back(migration_counter);
 		result.push_back(idle_time_counter);
 		result.push_back(number_of_core_necessary);
+		result.push_back(studyInterval);
 	}
 	return result;
 }
