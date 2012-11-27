@@ -66,11 +66,13 @@ breaklines=true
 
 		Premièrement, on génère les $n$ tâches avec des paramètres aléatoires (distribution uniforme entre deux bornes pour chaque paramètre). Le WCET est 			bien entendu borné par la valeur de l'échéance.\\
 
-		Ensuite, on calcule le facteur d'erreur $F_u = \frac{\Sigma U_i}{U_{globale}}$ et on l'applique à toutes les tâches soit en multipliant le WCET 			soit en	divisant la période (une chance sur deux pour chaque tâche).\\
+		Ensuite, on calcule le facteur d'erreur $F_u = \frac{\Sigma U_i}{U_{globale}}$ et on l'applique à toutes les tâches en multipliant le WCET.\\
 
-		Ceci ne nous donne pas encore l'utilisation demandée pour deux raisons : premièrement, le système étant à temps discret, les résultats des 					opérations sont toujours arrondies à l'entier le plus proche ce qui crée des imprécisions. Ensuite, le facteur d'erreur est limité par les 					contraintes logiques des tâches ($wcet \ge 1$, $wcet \le deadline$, etc).\\
+		Ceci ne nous donne pas encore l'utilisation demandée pour deux raisons : premièrement, le système étant à temps discret, les résultats des opérations sont toujours arrondies à l'entier le plus proche ce qui crée des imprécisions. Ensuite, la modification par le facteur d'erreur est limitée par les conditions d'existences des tâches ($wcet \ge 1$, $wcet \le deadline$, etc).\\
 
-		On effectue donc une troisième étape dans laquelle on va, jusqu'à obtenir une utilisation acceptable, sélectionner une tâche au hasard et faire 			varier son wcet ou sa période de 1 pour faire augmenter ou diminuer son utilisation (en fonction de ce qui est nécessaire).\\
+		On effectue donc une troisième étape dans laquelle on va, jusqu'à obtenir une utilisation acceptable, sélectionner une tâche au hasard et faire varier son wcet de 1 pour faire augmenter ou diminuer son utilisation (en fonction de ce qui est nécessaire).\\
+		
+		Il est à noter qu'on aurait pu également effectuer ses changements sur la période, ou mélanger ces deux approches en modifiant parfois le WCET, parfois la période dans le but d'avoir des systèmes plus variés. C'est ce qui avait été fait au départ mais on a dû limiter les modifications au WCET pour garder un intervalle d'étude raisonnable (voir section 3.1).\\
 
 		Ce système nous semble générer des systèmes assez variés en un temps raisonnable.
 
@@ -85,9 +87,8 @@ breaklines=true
 	\subsection{Implémentation de EDF-k}
 		Après avoir chargé le système (passé en paramètre ou lu sur un fichier), on calcule le nombre minimale de cœurs et le nombre de tâches prioritaires avec la formule : $ m_{min}(T) = \min_{k=1}^n \{  (k-1) + \lceil \frac{U^{(T^{(k+1)})}}{1- U(T_k)}  \rceil \} $.\\
 		~\\
-		On lance ensuite un simulateur global EDF qu'on a légèrement adapté pour qu'il puisse gérer les jobs prioritaires (\hyperlink{prioriteEDFk}{c.f. chap 3.2} ).\\
+		On lance ensuite un simulateur global EDF qu'on a légèrement adapté pour qu'il puisse gérer les jobs prioritaires (\hyperlink{prioriteEDFk}{c.f. section 3.2} ).\\
 		Ainsi quel que soit l'état du système ceux-ci passeront devant les autres jobs et ils auront l'impression d'avoir un processeur chacun.
-		
 		
 	\subsection{Implémentation de global EDF}
 		Après avoir chargé le système (passé en paramètres ou lu sur un fichier), on calcule le nombre minimale de cœur avec la formule : $ m_{min} =\lceil 		U_{globale} \rceil$.\\
@@ -164,11 +165,11 @@ while (_t < studyInterval) {
 		\begin{enumerate}
 			\item \verb?./globalEDFvsEDF-k -u utilisationVoulue -n nombreDeCœur -t nombreDeTests?
 					On compare alors EDF-k et global EDF pour sur des systèmes correspondants.\\
-					On lance donc successivement TaskGenerator puis simGlobalEDF et simEDF-k, mais sans passer par des fichiers textes, ils se passent le système et les différents paramètres directement.
+					On lance donc successivement \verb?TaskGenerator? puis \verb?simGlobalEDF? et \verb?simEDF-k?, mais sans passer par des fichiers textes, ils se passent le système et les différents paramètres directement.
 			\item \verb?./globalEDFvsEDF-k [sans parametres]?
 					On compare ici EDF-k et global EDF pour différentes valeurs d'utilisation et de nombre de tâches à des fins de statistiques.\\
 					On essaye des utilisations de (30-50-70-90-110-130-150) pour des systèmes de (5-10-15-20) tâches.\\
-					Le résultat est affiché et stocké dans un fichier "statistics.txt"
+					Le résultat est affiché et stocké dans un fichier \verb?statistics.txt?.
 		\end{enumerate}
 		
 		
@@ -194,10 +195,10 @@ while (_t < studyInterval) {
 		La principale difficulté de EDF-k est la gestion des tâches prioritaires.\\
 		La méthode vue en cours consistait à mettre les deadlines de ces tâches à $- \infty$. mais notre implémentation du simulateur utilise fréquemment ces deadlines pour divers calculs (tester l'ordonnancabilité du système, ...) et la gestion de deadline à $- \infty$ aurait rendu notre code trop complexe.\\
 		~\\
-		Il nous a donc semblé plus simple de rajouter un paramètre booléen "priority" aux tâches (et donc à leurs jobs), ainsi on ne doit se préoccuper de la priorité qu'à deux endroits :
+		Il nous a donc semblé plus simple de rajouter un paramètre booléen \verb?priority? aux tâches (et donc à leurs jobs), ainsi on ne doit se préoccuper de la priorité qu'à deux endroits :
 		\begin{enumerate}
-			\item Lors du tri des priority\_queue ready et running, en modifiant le comparateur EDFcomp pour que les jobs prioritaires arrivent au sommet de ready (ainsi ils sont toujours exécuté en premier) et en bas de running (ainsi on regarde prioritairement les autres jobs en cas de préemption).\\
-			\item Lors du choix des jobs a préempter, on utilise la méthode "JobNeedToBePreempted()" qui regarde les sommets de ready et running pour définir si une préemption est nécessaire.\\
+			\item Lors du tri des priority\_queue \verb?ready? et \verb?running?, en modifiant le comparateur \verb?EDFcomp? pour que les jobs prioritaires arrivent au sommet de \verb?ready? (ainsi ils sont toujours exécuté en premier) et en bas de \verb?running? (ainsi on regarde prioritairement les autres jobs en cas de préemption).\\
+			\item Lors du choix des jobs a préempter, on utilise la méthode \verb?JobNeedToBePreempted()? qui regarde les sommets de \verb?ready? et \verb?running? pour définir si une préemption est nécessaire.\\
 				S'il y a des jobs prioritaires, ils sont alors privilégiés (ont leur attribue un cœur ou les laisse terminer leur job), sinon on se base sur les deadlines.
 		\end{enumerate}
 		Ainsi le système peut fonctionner avec des jobs prioritaires, ou sans jobs prioritaires, devenant alors un simulateur global EDF.
